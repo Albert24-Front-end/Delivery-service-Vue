@@ -1,4 +1,11 @@
 @import './base.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: var(--color-green-500, oklch(72.3% 0.219 149.579));
+  --font-primary: 'Roboto-Regular';
+  --container-7xl: 80rem;
+}
 
 #app {
   max-width: 1280px;
