@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <button v-on="toggleDropdown()" class="">
-      <img src="" alt="" class="">
-      <span v-bind="isOpen"></span>
+  <div class="relative inline-block font-[sans-serif]" ref="dropdownRef">
+    <button @click="toggleDropdown()" class="cursor-pointer flex items-center g-2 min-w-[120px] bg-white px-3 py-2 text-sm border border-solid border-[#ddd] rounded-lg transition-all duration-200 hover:border-[#bbb] hover:bg-[#f9f9f9]">
+      <img :src=languages.src alt="flag" class="w-5 h-3 object-cover rounded-xs">
+      {{ getActiveLang }}
+      <span v-if="isOpen" class="">▼</span>
     </button>
     <div>
       <div v-for="lang in languages">
-        <img :src="lang.flag" class="flag-icon" alt="flag">
+        <img :src="lang.src" class="flag-icon" alt="flag" @click="switchLanguage(lang.code)">
         {{ lang.label }}
       </div>
       <div v-if="!languages">Список языков пуст</div>
@@ -17,7 +18,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 const isOpen = ref(false);
-const currentLang = ref('')
+const currentLang = ref('ru')
+const dropdownRef = ref<HTMLElement | null>(null);
 
 const languages = [
     {
@@ -58,8 +60,11 @@ const getActiveLang = computed(() => {
   return languages.find(l => l.code === currentLang.value) || languages[0]?.code
 })
 
-const switchLanguage = computed((lang) => {
-  if (currentLang.value === lang) return;
+const switchLanguage = (lang: string) => {
+  if (currentLang.value === lang) {
+    isOpen.value = false;
+    return;
+  }
 
     localStorage.setItem('userLanguage', lang as string);
 
@@ -69,7 +74,7 @@ const switchLanguage = computed((lang) => {
     const newUrl = currentUrl.replace(pattern, `/${lang}/`);
 
     return window.location.href = newUrl;
-})
+}
 
 
 </script>
