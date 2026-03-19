@@ -1,9 +1,9 @@
 <template>
   <div class="relative inline-block font-[sans-serif]" ref="dropdownRef">
-    <button type="button" @click="toggleDropdown()" class="cursor-pointer flex items-center gap-2 w-full max-w-35 bg-white px-3 py-2 text-sm border border-solid border-[#ddd] rounded-lg transition-all duration-200 hover:border-[#bbb] hover:bg-[#f9f9f9]">
+    <button type="button" @click="toggleDropdown()" class="cursor-pointer min-w-35 flex justify-between items-center gap-2 w-full bg-white px-3 py-2 text-sm border border-solid border-[#ddd] rounded-lg transition-all duration-200 hover:border-[#bbb] hover:bg-[#f9f9f9]">
       <img :src=getActiveLang?.src alt="flag" class="flag-icon">
       {{ getActiveLang?.label }}
-      <span class="text-[10px] text-[#888] ml-auto transition-transform duration-200 " :class="{ 'rotate-180': isOpen }">▼</span>
+      <span class="text-[10px] text-[#888] ml-auto transition-transform duration-200" :class="{ 'rotate-180': isOpen }">▼</span>
     </button>
     <div v-if="isOpen" class="absolute bg-white min-w-full z-1000 rounded-lg mt-1 overflow-hidden border border-solid border-[#eee] shadow-drop">
       <div v-for="lang in languages" :key="lang.code" @click="switchLanguage(lang.code)" class="cursor-pointer flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-[#f1f1f1] duration-200 active:bg-[#eef5ff] active:text-[#007bff] active:font-medium">
@@ -17,8 +17,8 @@
 
 <style scoped>
 .flag-icon {
-    min-width: 1.25rem;
-    min-height: 1rem;
+    width: 1.25rem;
+    height: 1rem;
     object-fit: cover;
     border-radius: 2px;
 }
