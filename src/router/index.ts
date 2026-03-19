@@ -3,9 +3,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'main',
     component: () => import('../layouts/defaultLayout.vue'),
     children: [
+      {
+        path: '',
+        name: 'main',
+        component: () => import('../pages/MainPage.vue'),
+      },
       {
         path: '/order',
         name: 'order',

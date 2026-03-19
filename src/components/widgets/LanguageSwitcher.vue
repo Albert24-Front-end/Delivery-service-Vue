@@ -1,11 +1,11 @@
 <template>
   <div class="relative inline-block font-[sans-serif]" ref="dropdownRef">
-    <button @click="toggleDropdown()" class="cursor-pointer flex items-center gap-2 min-w-30 bg-white px-3 py-2 text-sm border border-solid border-[#ddd] rounded-lg transition-all duration-200 hover:border-[#bbb] hover:bg-[#f9f9f9]">
+    <button type="button" @click="toggleDropdown()" class="cursor-pointer flex items-center gap-2 w-full max-w-35 bg-white px-3 py-2 text-sm border border-solid border-[#ddd] rounded-lg transition-all duration-200 hover:border-[#bbb] hover:bg-[#f9f9f9]">
       <img :src=getActiveLang?.src alt="flag" class="flag-icon">
       {{ getActiveLang?.label }}
-      <span v-if="isOpen" class="text-[10px] text-[#888] ml-auto transition-transform duration-200 " :class="{ 'rotate-180': isOpen }">▼</span>
+      <span class="text-[10px] text-[#888] ml-auto transition-transform duration-200 " :class="{ 'rotate-180': isOpen }">▼</span>
     </button>
-    <div v-if="isOpen" class="absolute bg-white min-w-full z-1000 rounded-lg mt-1 overflow-hidden border border-solid border-[#eee] shadow-drop" :class="{ 'block': isOpen }">
+    <div v-if="isOpen" class="absolute bg-white min-w-full z-1000 rounded-lg mt-1 overflow-hidden border border-solid border-[#eee] shadow-drop">
       <div v-for="lang in languages" :key="lang.code" @click="switchLanguage(lang.code)" class="cursor-pointer flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-[#f1f1f1] duration-200 active:bg-[#eef5ff] active:text-[#007bff] active:font-medium">
         <img :src="lang.src" class="flag-icon" alt="flag">
         {{ lang.label }}
@@ -17,8 +17,8 @@
 
 <style scoped>
 .flag-icon {
-    width: 20px;
-    height: 15px;
+    min-width: 1.25rem;
+    min-height: 1rem;
     object-fit: cover;
     border-radius: 2px;
 }
@@ -59,12 +59,6 @@ const languages = [
     },
   ];
 onMounted(() => {
-  const pathLang = window.location.pathname.split("/");
-  const foundLang = languages.find(l => pathLang.includes(l.code));
-  if (foundLang) {
-    locale.value = foundLang.code;
-  }
-
   window.addEventListener('click', handleOutsideClick);
 })
 
@@ -82,10 +76,6 @@ const handleOutsideClick = (event: MouseEvent) => {
   }
 }
 
-const getLanguagePattern = () => {
-    return languages.map(l => l.code).join('|');
-  }
-
 const getActiveLang = computed(() => {
   return languages.find(l => l.code === locale.value) || languages[0]
 })
@@ -97,12 +87,7 @@ const switchLanguage = (lang: string) => {
   }
 
     localStorage.setItem('userLanguage', lang as string);
-
-    const currentUrl = window.location.href;
-    // Динамическая регулярка
-    const pattern = new RegExp(`\/(${getLanguagePattern()})(\/|$)`);
-    const newUrl = currentUrl.replace(pattern, `/${lang}/`);
-
-    return window.location.href = newUrl;
+    locale.value = lang // Instant lang change
+    isOpen.value = false
 }
 </script>

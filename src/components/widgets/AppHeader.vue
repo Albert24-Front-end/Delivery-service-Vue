@@ -1,9 +1,9 @@
 <template>
   <nav
-    class="container w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 border-b border-gray-200 flex justify-between items-center gap-2"
+    class="container w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center gap-2"
   >
-    <div class="flex items-center">
-      <router-link to="/" aria-current="page">
+    <div>
+      <router-link to="/" aria-current="page" class="flex items-center">
         <div class="header-logo">D</div>
         <div class="header-title">Delivery</div>
       </router-link>
