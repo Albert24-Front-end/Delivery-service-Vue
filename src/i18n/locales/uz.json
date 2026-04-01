@@ -4,5 +4,33 @@
     "order": "Yetkazib berishni rasmiylashtirish",
     "track": "Jo‘natmani kuzatish",
     "no_lang": "Tillar ro‘yxati bo‘sh"
+  },
+  "labels": {
+    "tracking": "24/7 kuzatuv",
+    "routes": "Eng yaxshi marshrutlar",
+    "insurance": "Jo‘natmalarni sug‘urtalash",
+    "delivery": "Muddatida yetkazib berish",
+    "tariffs": "Foydali tariflar"
+  },
+  "main_title": "Mamlakatlararo va mamlakat ichida jo‘natmalarni yetkazib beramiz. Xavfsiz. Tez. Omonatiga xiyonat qilmaymiz!",
+  "buttons": {
+    "order": "Yetkazib berishni buyurtma qilish",
+    "track": "Jo‘natmani kuzatish",
+    "get_track_info": "Kuzatish",
+    "calculate": "Hisoblash",
+    "send": "Ariza yuborish"
+  },
+  "inputs": {
+    "get_track_info": "Paket raqamini kiriting",
+    "route_from": "Qayerdan: manzil kiritishni boshlang",
+    "route_to": "Qayerga: manzil kiritishni boshlang",
+    "name": "Ismingiz",
+    "phone": "Telefoningiz",
+    "comment": "Yetkazib berish tafsilotlari va fikrlar"
+  },
+  "track": {
+    "from": "Qayerdan",
+    "to": "Qayerga",
+    "status_title": "Bu paket holati"
   }
 }

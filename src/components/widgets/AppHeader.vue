@@ -1,5 +1,5 @@
 <template>
-  <nav
+  <header
     class="fixed z-6 left-5 right-5 top-5 mx-auto h-17.5 px-4.5 py-3.5 flex justify-between items-center border border-black/10 bg-white rounded-[18px] shadow-header backdrop-blur-[10px]"
   >
       <router-link to="/" aria-current="page" class="flex items-center gap-2.5 decoration-none">
@@ -48,16 +48,16 @@
           <li class="hover:cursor-pointer rounded-lg py-4 px-2"><LanguageSwitcher/></li>
         </ul>
       </div>
-  </nav>
+    </header>
 </template>
 
 <script setup lang="ts">
 import { onMounted, onBeforeMount, ref } from 'vue'
-import { RouterLink, useRoute} from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 
-const route = useRoute()
+// const route = useRoute()
 const { t } = useI18n()
 
 const links = ref([
@@ -88,5 +88,3 @@ onBeforeMount(() => {
   window.removeEventListener('resize', handleWidth)
 })
 </script>
-
-<style scoped></style>

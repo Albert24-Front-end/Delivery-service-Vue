@@ -4,5 +4,33 @@
     "order": "Order delivery",
     "track": "Track package",
     "no_lang": "Language list is empty"
+  },
+  "labels": {
+    "tracking": "Tracking 24/7",
+    "routes": "Best routes",
+    "insurance": "Parcel insurance",
+    "delivery": "Delivery on time",
+    "tariffs": "Competitive rates"
+  },
+  "main_title": "Delivery of parcels between countries and within countries. Safe. Fast. In integrity and safety!",
+  "buttons": {
+    "order": "Order delivery",
+    "track": "Track package",
+    "get_track_info": "Track",
+    "calculate": "Calculate",
+    "send": "Send request"
+  },
+  "inputs": {
+    "get_track_info": "Enter the parcel number",
+    "route_from": "From: start entering the address",
+    "route_to": "To: start entering the address",
+    "name": "Your name",
+    "phone": "Your phone number",
+    "comment": "Delivery details and comments"
+  },
+  "track": {
+    "from": "From",
+    "to": "To",
+    "status_title": "Status of this package"
   }
 }

@@ -4,5 +4,33 @@
     "order": "Lieferung vornehmen",
     "track": "Paket verfolgen",
     "no_lang": "Die Liste der Sprachen ist leer"
+  },
+  "labels": {
+    "tracking": "24/7 Tracking",
+    "routes": "Beste Routen",
+    "insurance": "Paketversicherung",
+    "delivery": "Pünktliche Lieferung",
+    "tariffs": "Günstige Tarife"
+  },
+  "main_title": "Paketversand zwischen und innerhalb von Ländern. Sicher. Schnell. Zuverlässig und sicher!",
+  "buttons": {
+    "order": "Lieferung bestellen",
+    "track": "Paket verfolgen",
+    "get_track_info": "Verfolgen",
+    "calculate": "Berechnen",
+    "send": "Bewerbung einreichen"
+  },
+  "inputs": {
+    "get_track_info": "Geben Sie die Paketnummer ein",
+    "route_from": "Woher: Beginnen Sie mit der Eingabe der Adresse",
+    "route_to": "Wohin: Geben Sie die Adresse ein",
+    "name": "Ihr Name",
+    "phone": "Ihr Telefon",
+    "comment": "Lieferdetails und Kommentare"
+  },
+  "track": {
+    "from": "Woher",
+    "to": "Wohin",
+    "status_title": "Status dieses Pakets"
   }
 }
