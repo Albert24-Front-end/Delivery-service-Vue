@@ -31,6 +31,12 @@
   "track": {
     "from": "Qayerdan",
     "to": "Qayerga",
-    "status_title": "Bu paket holati"
+    "status_title": "Bu paket holati",
+    "toasts": {
+      "success": "Ariza haqida ma’lumot olindi!",
+      "server_failure": "Ariza axboroti olinmadi",
+      "fill_number": "Jo‘natish raqamini to‘ldiring",
+      "input_error": "Yuborish raqamini bexato kiriting"
+    }
   }
 }

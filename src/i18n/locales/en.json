@@ -31,6 +31,12 @@
   "track": {
     "from": "From",
     "to": "To",
-    "status_title": "Status of this package"
+    "status_title": "Status of this package",
+    "toasts": {
+      "success": "Application information received!",
+      "server_failure": "Failed to retrieve application information",
+      "fill_number": "Enter the tracking number",
+      "input_error": "Please enter a valid tracking number"
+    }
   }
 }

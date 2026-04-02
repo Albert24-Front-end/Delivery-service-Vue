@@ -72,27 +72,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useDeliveryData } from '@/composables/useDeliveryData';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css'
 
 const { t } = useI18n()
 const trackNumber = ref('')
 const { data, error, loading, fetchDeliveryInfo } = useDeliveryData();
 
+watch(error, (newError) => {
+    if (newError) {
+        toast.error(t('track.toasts.server_failure'), {
+            autoClose: 2000,
+            transition: toast.TRANSITIONS.SLIDE
+        });
+    }
+})
+
 const handleTrack = async () => {
     const cleanId = trackNumber.value.trim();
 
     if (!cleanId) {
-        // В идеале тут вызвать toast.error
+        toast.error(t('track.toasts.fill_number'), {
+            autoClose: 2000,
+            transition: toast.TRANSITIONS.SLIDE
+        });
         return
     }
 
     const numericId = Number(cleanId)
     if (isNaN(numericId) || numericId <= 0) {
+        toast.warn(t('track.toasts.input_error'), {
+            autoClose: 2000,
+            transition: toast.TRANSITIONS.SLIDE
+        });
         return
     }
     await fetchDeliveryInfo(numericId)
+    if (!error.value && data.value) {
+        toast.success(t('track.toasts.success'), {
+            autoClose: 1500,
+            transition: toast.TRANSITIONS.SLIDE
+        });
+    }
 }
 </script>
 

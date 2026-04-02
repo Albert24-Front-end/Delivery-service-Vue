@@ -31,6 +31,12 @@
   "track": {
     "from": "Woher",
     "to": "Wohin",
-    "status_title": "Status dieses Pakets"
+    "status_title": "Status dieses Pakets",
+    "toasts": {
+      "success": "Informationen zum Antrag erhalten!",
+      "server_failure": "Informationen zum Antrag konnten nicht abgerufen werden",
+      "fill_number": "Füllen Sie die Sendungsnummer aus",
+      "input_error": "Geben Sie die korrekte Sendungsnummer ein"
+    }
   }
 }
