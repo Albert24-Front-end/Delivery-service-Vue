@@ -38,5 +38,17 @@
       "fill_number": "Jo‘natish raqamini to‘ldiring",
       "input_error": "Yuborish raqamini bexato kiriting"
     }
+  },
+  "sizes": {
+    "xs": "17×12×9 sm,<br> 0.5 kg gacha",
+    "s": "23×19×10 sm,<br> 2 kg gacha",
+    "m": "33×25×15 sm,<br> 5 kg gacha",
+    "l": "31×25×38 sm,<br> 12 kg gacha",
+    "xl": "60×35×30 sm,<br> 18 kg gacha",
+    "max": "120×120×80 sm,<br> 200 kg gacha"
+  },
+  "speeds": {
+    "regular": "Oddiy",
+    "fast": "Ustuvor"
   }
 }

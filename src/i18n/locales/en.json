@@ -38,5 +38,17 @@
       "fill_number": "Enter the tracking number",
       "input_error": "Please enter a valid tracking number"
     }
+  },
+  "sizes": {
+    "xs": "17×12×9 cm,<br>up to 0.5 kg",
+    "s": "23×19×10 cm,<br>up to 2 kg",
+    "m": "33×25×15 cm,<br>up to 5 kg",
+    "l": "31×25×38 cm,<br>up to 12 kg",
+    "xl": "60×35×30 cm,<br>up to 18 kg",
+    "max": "120×120×80 cm,<br>up to 200 kg"
+  },
+  "speeds": {
+    "regular": "Regular",
+    "fast": "Priority"
   }
 }
