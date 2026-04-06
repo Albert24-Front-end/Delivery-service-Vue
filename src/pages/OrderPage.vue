@@ -2,16 +2,16 @@
   <div id="map"></div>
   <aside class="main" id="sidebar">
     <div class="main-header">
-        <div class="main-title">Оформление доставки</div>
-        <div class="main-text">Выберите параметры для расчета отправления</div>
+        <div class="main-title">{{ t('order.title') }}</div>
+        <div class="main-text">{{ t('order.subtitle') }}</div>
     </div>
     <div class="main-content">
         <div class="main-route">
-            <div class="main-block-title">Маршрут</div>
+            <div class="main-block-title">{{ t('order.route') }}</div>
             <div class="main-fields">
                 <div class="main-field" id="fromField">
                     <div class="main-pin"></div>
-                    <input id="from" placeholder="Откуда: начните вводить адрес" formControlName="from" autocomplete="off"/>
+                    <input id="from" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off"/>
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
                 <!-- @if (this.routeForm.get('from')?.invalid && (this.routeForm.get('from')?.dirty || this.routeForm.get('from')?.touched)) { -->
@@ -20,7 +20,7 @@
 
                 <div class="main-field" id="toField">
                     <div class="main-pin"></div>
-                    <input id="to" placeholder="Куда: начните вводить адрес" formControlName="to" autocomplete="off"/>
+                    <input id="to" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off"/>
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
                 <!-- @if (this.routeForm.get('to')?.invalid && (this.routeForm.get('to')?.dirty || this.routeForm.get('to')?.touched)) { -->
@@ -30,10 +30,10 @@
         </div>
 
         <div class="main-package">
-            <div class="main-block-title">Размер посылки</div>
+            <div class="main-block-title">{{ t('order.package_size') }}</div>
 
             <div class="main-sizes">
-                    <div v-for="size of sizes" :key="size.value" class="main-size-card">
+                    <div v-for="size of DELIVERY_SIZES" :key="size.value" class="main-size-card">
                         <div class="main-size-top">
                             <div class="main-size-label">{{ size.value }}</div>
                             <div class="main-size-rate">{{ size.rate }} ₽/км</div>
@@ -47,10 +47,10 @@
         </div>
 
         <div class="main-speed">
-            <div class="main-block-title">Скорость доставки</div>
+            <div class="main-block-title">{{ t('order.delivery_speed') }}</div>
 
             <div class="main-speeds">
-                    <div v-for="speed of speeds" :key="speed.value" class="main-speed-card">
+                    <div v-for="speed of DELIVERY_SPEEDS" :key="speed.value" class="main-speed-card">
                         <img class="main-speed-media" :src="`images/icons/${speed.value}.svg`" alt="Speed"/>
                         <div class="main-speed-description">{{ speed.label }}</div>
                     </div>
@@ -58,35 +58,35 @@
         </div>
 
         <div class="main-calculate-block" >
-            <button id="calc" class="button calculate-button" type="button" >Рассчитать</button>
+            <button id="calc" class="button calculate-button" type="button">{{ t('buttons.calculate') }}</button>
         </div>
 
 
         <div class="main-result" id="result">
-            <div class="main-result-title">Расчеты вашего заказа</div>
+            <div class="main-result-title">{{ t('order.summary.title') }}</div>
             <div class="main-result-lines">
-                <div class="main-result-line"><span>Расстояние</span><span id="distanceValue"></span></div>
-                <div class="main-result-line"><span>Доставим через</span><span id="durationValue"></span></div>
-                <div class="main-result-line"><span>Тариф</span><span id="rateValue"></span></div>
-                <div class="main-result-line"><span>Скорость доставки</span><span id="speedValue"></span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.distance') }}</span><span id="distanceValue"></span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.delivery_time') }}</span><span id="durationValue"></span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.tariff') }}</span><span id="rateValue"></span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.speed') }}</span><span id="speedValue"></span></div>
             </div>
             <div class="main-price">
-                <div class="main-price-label">Итого</div>
+                <div class="main-price-label">{{ t('order.summary.total') }}</div>
                 <div class="main-price-value" id="totalValue"></div>
             </div>
         </div>
 
         <div class="main-order-box">
             <div class="main-order-form" id="orderForm">
-                <div class="main-order-title">Оформление доставки</div>
+                <div class="main-order-title">{{ t('order.contacts.title') }}</div>
                 <div class="main-block-info-row">
-                    <div class="main-block-title">Контакты</div>
+                    <div class="main-block-title">{{ t('order.contacts.section') }}</div>
                     <div class="order-fields">
                         <div class="main-field">
-                            <input id="customerName" placeholder="Ваше имя" formControlName="name" autocomplete="off"/>
+                            <input id="customerName" :placeholder="t('order.contacts.name')" formControlName="name" autocomplete="off"/>
                         </div>
                         <div class="main-field">
-                            <input id="customerPhone" placeholder="Ваш телефон" formControlName="phone" autocomplete="off" inputmode="tel" appOnlyNumbers/>
+                            <input id="customerPhone" :placeholder="t('order.contacts.phone')" formControlName="phone" autocomplete="off" inputmode="tel" appOnlyNumbers/>
                         </div>
                         <div>
                             <!-- @if(this.orderForm.get('phone')?.errors?.['pattern']) { -->
@@ -106,21 +106,19 @@
                     </div>
                 </div>
                 <div class="main-block-info-row extra-info">
-                    <div class="main-block-title">Дополнительная информация</div>
+                    <div class="main-block-title">{{ t('order.comment.title') }}</div>
                     <div class="main-field textarea">
-                        <textarea id="comment" placeholder="Детали доставки и комментарии" formControlName="comment"></textarea>
+                        <textarea id="comment" :placeholder="t('order.comment.placeholder')" formControlName="comment"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="button main-submit-request" type="button">Отправить
-                    заявку
-                </button>
+                <button id="submit" class="button main-submit-request" type="button">{{ t('buttons.send') }}</button>
             </div>
 
             <div class="main-order-success" id="orderSuccess">
                 <div class="main-success-icon">✓</div>
-                <div class="main-success-title">Заявка отправлена!</div>
-                <div class="main-success-title">Номер отправления – <span id="orderId"></span></div>
-                <div class="main-success-subtitle">Мы скоро свяжемся с вами</div>
+                <div class="main-success-title">{{ t('order.success.title') }}</div>
+                <div class="main-success-title">{{ t('order.success.number') }}<span id="orderId"></span></div>
+                <div class="main-success-subtitle">{{ t('order.success.message') }}</div>
             </div>
         </div>
     </div>
@@ -128,8 +126,11 @@
 </template>
 
 <script setup lang="ts">
-import { DELIVERY_SIZES as sizes } from '@/db/order.config';
-import { DELIVERY_SPEEDS as speeds } from '@/db/order.config';
+import { DELIVERY_SIZES, DELIVERY_SPEEDS } from '@/db/order.config';
+
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 </script>
 

@@ -28,6 +28,38 @@
     "phone": "Your phone number",
     "comment": "Delivery details and comments"
   },
+  "order": {
+    "title": "Delivery checkout",
+    "subtitle": "Select parameters to calculate your shipment",
+    "route": "Routes",
+    "from_placeholder": "From: start entering address",
+    "to_placeholder": "To: start entering address",
+    "package_size": "Package size",
+    "delivery_speed": "Delivery speed",
+    "summary": {
+      "title": "Order summary",
+      "distance": "Distance",
+      "delivery_time": "Delivery time",
+      "tariff": "Tariff",
+      "speed": "Delivery speed",
+      "total": "Total"
+    },
+    "contacts": {
+      "title": "Checkout",
+      "section": "Contact details",
+      "name": "Your name",
+      "phone": "Your phone"
+    },
+    "comment": {
+      "title": "Additional information",
+      "placeholder": "Delivery details and comments"
+    },
+    "success": {
+      "title": "Request submitted!",
+      "number": "Shipment number — ",
+      "message": "We will contact you shortly"
+    }
+  },
   "track": {
     "from": "From",
     "to": "To",

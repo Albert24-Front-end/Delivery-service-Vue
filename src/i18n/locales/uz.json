@@ -28,6 +28,39 @@
     "phone": "Telefoningiz",
     "comment": "Yetkazib berish tafsilotlari va fikrlar"
   },
+  "order": {
+    "title": "Yetkazib berishni rasmiylashtirish",
+    "subtitle": "Jo‘natmani hisoblash parametrlarini tanlang",
+    "route": "Yo‘nalish",
+    "from_placeholder": "Qayerdan: manzilni kiritishni boshlang",
+    "to_placeholder": "Qayerga: manzil kiritishni boshlang",
+    "package_size": "Posilka hajmi",
+    "delivery_speed": "Yetkazib berish tezligi",
+
+    "summary": {
+      "title": "Buyurtmangizni hisob-kitoblar",
+      "distance": "Masofa",
+      "delivery_time": "Yetkazib beramiz",
+      "tariff": "Tarif",
+      "speed": "Yetkazib berish tezligi",
+      "total": "Jami"
+    },
+    "contacts": {
+      "title": "Yetkazib berishni rasmiylashtirish",
+      "section": "Aloqalar",
+      "name": "Ismingiz",
+      "phone": "Telefoningiz"
+    },
+    "comment": {
+      "title": "Qo‘shimcha ma’lumot",
+      "placeholder": "Yetkazib berish tafsilotlari va fikrlar"
+    },
+    "success": {
+      "title": "Murojaat yuborildi!",
+      "number": "Jo‘natish raqami -",
+      "message": "Tez orada siz bilan bog‘lanamiz"
+    }
+  },
   "track": {
     "from": "Qayerdan",
     "to": "Qayerga",

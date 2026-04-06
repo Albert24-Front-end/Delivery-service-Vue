@@ -28,6 +28,42 @@
     "phone": "Ihr Telefon",
     "comment": "Lieferdetails und Kommentare"
   },
+  "order": {
+    "title": "Lieferung vornehmen",
+    "subtitle": "Wählen Sie die Parameter zur Berechnung der Sendung",
+    "route": "Route",
+    "from_placeholder": "Von: Adresse eingeben",
+    "to_placeholder": "Nach: Adresse eingeben",
+    "package_size": "Paketgröße",
+    "delivery_speed": "Liefergeschwindigkeit",
+
+    "summary": {
+      "title": "Bestellübersicht",
+      "distance": "Entfernung",
+      "delivery_time": "Lieferzeit",
+      "tariff": "Tarif",
+      "speed": "Liefergeschwindigkeit",
+      "total": "Gesamt"
+    },
+
+    "contacts": {
+      "title": "Bestellung aufgeben",
+      "section": "Kontaktdaten",
+      "name": "Ihr Name",
+      "phone": "Ihre Telefonnummer"
+    },
+
+    "comment": {
+      "title": "Zusätzliche Informationen",
+      "placeholder": "Lieferdetails und Kommentare"
+    },
+
+    "success": {
+      "title": "Anfrage gesendet!",
+      "number": "Sendungsnummer — ",
+      "message": "Wir werden Sie in Kürze kontaktieren"
+    }
+  },
   "track": {
     "from": "Woher",
     "to": "Wohin",
