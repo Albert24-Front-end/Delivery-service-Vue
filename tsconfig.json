@@ -11,7 +11,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./node_modules/@yandex/ymaps3-types"]
   },
   "exclude": ["node_modules", "dist"]
 }

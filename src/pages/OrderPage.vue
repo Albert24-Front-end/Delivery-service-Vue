@@ -1,5 +1,23 @@
 <template>
-  <div id="map"></div>
+  <div id="map">
+    <yandex-map
+      v-model="map"
+      :settings="{
+        location: {
+          center: [69.164708, 41.184022],
+          zoom: 5,
+        },
+      }"
+      width,
+      height,
+      theme
+      showScaleInCopyrights: true
+    >
+        <yandex-map-default-scheme-layer/>
+        <yandex-map-default-features-layer/>
+        <yandex-map-default-marker :settings="{ coordinates: [69.164708, 41.184022] }"/>
+    </yandex-map>
+  </div>
   <aside class="main" id="sidebar">
     <div class="main-header">
         <div class="main-title">{{ t('order.title') }}</div>
@@ -9,23 +27,20 @@
         <div class="main-route">
             <div class="main-block-title">{{ t('order.route') }}</div>
             <div class="main-fields">
-                <div class="main-field" id="fromField">
+                <div class="main-field" id="fromField" :class="{ 'error': v$.route.from.$error }">
                     <div class="main-pin"></div>
-                    <input id="from" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off"/>
+                    <input id="from" v-model="stateForm.route.from" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off" @blur="v$.route.from.$touch()"/>
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
-                <!-- @if (this.routeForm.get('from')?.invalid && (this.routeForm.get('from')?.dirty || this.routeForm.get('from')?.touched)) { -->
-                    <label for="from" class="input-error">Заполните поле Откуда</label>
-                <!-- } -->
 
-                <div class="main-field" id="toField">
+                <label for="from" v-if="v$.route.from.$error" class="input-error">{{ t('order.errors.from') }}</label>
+
+                <div class="main-field" id="toField" :class="{ 'error': v$.route.to.$error }">
                     <div class="main-pin"></div>
-                    <input id="to" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off"/>
+                    <input id="to" v-model="stateForm.route.from" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off" @blur="v$.route.to.$touch()"/>
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
-                <!-- @if (this.routeForm.get('to')?.invalid && (this.routeForm.get('to')?.dirty || this.routeForm.get('to')?.touched)) { -->
-                    <label for="from" class="input-error">Заполните поле Куда</label>
-                <!-- } -->
+                <label for="from" v-if="v$.route.to.$error" class="input-error">{{ t('order.errors.to') }}</label>
             </div>
         </div>
 
@@ -35,13 +50,13 @@
             <div class="main-sizes">
                     <div v-for="size of DELIVERY_SIZES" :key="size.value" class="main-size-card">
                         <div class="main-size-top">
-                            <div class="main-size-label">{{ size.value }}</div>
-                            <div class="main-size-rate">{{ size.rate }} ₽/км</div>
+                            <div class="main-size-label">{{ size.value.toUpperCase() }}</div>
+                            <div class="main-size-rate">{{ size.rate }} {{ t('order.summary.unit') }}</div>
                         </div>
                         <div class="main-size-media">
-                            <img src="" alt=""/>
+                            <img :src="`/src/assets/images/sizes/${size.value}.png`" alt="size"/>
                         </div>
-                        <div class="main-size-description"></div>
+                        <div class="main-size-description" v-html="size.description()"></div>
                     </div>
             </div>
         </div>
@@ -51,14 +66,14 @@
 
             <div class="main-speeds">
                     <div v-for="speed of DELIVERY_SPEEDS" :key="speed.value" class="main-speed-card">
-                        <img class="main-speed-media" :src="`images/icons/${speed.value}.svg`" alt="Speed"/>
-                        <div class="main-speed-description">{{ speed.label }}</div>
+                        <img class="main-speed-media" :src="`/src/assets/images/icons/${speed.value}.svg`" alt="Speed"/>
+                        <div class="main-speed-description">{{ speed.label() }}</div>
                     </div>
             </div>
         </div>
 
         <div class="main-calculate-block" >
-            <button id="calc" class="button calculate-button" type="button">{{ t('buttons.calculate') }}</button>
+            <button id="calc" class="button calculate-button" type="button" :disabled="v$.$invalid" @click="handleCalculate">{{ t('buttons.calculate') }}</button>
         </div>
 
 
@@ -83,35 +98,40 @@
                     <div class="main-block-title">{{ t('order.contacts.section') }}</div>
                     <div class="order-fields">
                         <div class="main-field">
-                            <input id="customerName" :placeholder="t('order.contacts.name')" formControlName="name" autocomplete="off"/>
+                            <input :placeholder="t('order.contacts.name')" autocomplete="off" @blur="v$.order.name.$touch()" v-model="stateForm.order.name"/>
                         </div>
                         <div class="main-field">
-                            <input id="customerPhone" :placeholder="t('order.contacts.phone')" formControlName="phone" autocomplete="off" inputmode="tel" appOnlyNumbers/>
+                            <input :placeholder="t('order.contacts.phone')" autocomplete="off" inputmode="tel" appOnlyNumbers @blur="v$.order.phone.$touch()" v-model="stateForm.order.phone"/>
+                        </div>
+                        <div class="error-labels">
+                            <label v-if="v$.order.name.$error" class="input-error">{{ t('order.errors.name')   }}</label>
+                            <label v-if="v$.order.phone.$error" class="input-error">{{ t('order.errors.phone')   }}</label>
+                            <label v-if="v$.order.phone.minLength.$error" class="input-error">{{ t('order.errors.phone_digit') }}</label>
+                        </div>
+                        <!-- <div>
+                            @if(this.orderForm.get('phone')?.errors?.['pattern']) {
+                                <label for="customerPhone" class="input-error">{{ t('order.errors.phone_digit') }}</label>
+                            }
                         </div>
                         <div>
-                            <!-- @if(this.orderForm.get('phone')?.errors?.['pattern']) { -->
-                                <label for="customerPhone" class="input-error">Телефон должен состоять только из цифр</label>
-                            <!-- } -->
+                            @if (this.orderForm.get('name')?.invalid && (this.orderForm.get('name')?.dirty || this.orderForm.get('name')?.touched)) {
+                                <label for="customerName" class="input-error">{{ t('order.errors.name') }}</label>
+                            }
                         </div>
                         <div>
-                            <!-- @if (this.orderForm.get('name')?.invalid && (this.orderForm.get('name')?.dirty || this.orderForm.get('name')?.touched)) { -->
-                                <label for="customerName" class="input-error">Заполните имя</label>
-                            <!-- } -->
-                        </div>
-                        <div>
-                            <!-- @if (this.orderForm.get('phone')?.invalid && (this.orderForm.get('phone')?.dirty || this.orderForm.get('phone')?.touched)) { -->
-                                <label for="customerName" class="input-error">Заполните телефон</label>
-                            <!-- } -->
-                        </div>
+                            @if (this.orderForm.get('phone')?.invalid && (this.orderForm.get('phone')?.dirty || this.orderForm.get('phone')?.touched)) {
+                                <label for="customerPhone" class="input-error">{{ t('order.errors.phone') }}</label>
+                            }
+                        </div> -->
                     </div>
                 </div>
                 <div class="main-block-info-row extra-info">
                     <div class="main-block-title">{{ t('order.comment.title') }}</div>
                     <div class="main-field textarea">
-                        <textarea id="comment" :placeholder="t('order.comment.placeholder')" formControlName="comment"></textarea>
+                        <textarea id="comment" :placeholder="t('order.comment.placeholder')" formControlName="comment" v-model="stateForm.order.comment"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="button main-submit-request" type="button">{{ t('buttons.send') }}</button>
+                <button id="submit" class="button main-submit-request" type="button" :disabled="v$.$invalid" @click="handleSubmit">{{ t('buttons.send') }}</button>
             </div>
 
             <div class="main-order-success" id="orderSuccess">
@@ -126,12 +146,76 @@
 </template>
 
 <script setup lang="ts">
-import { DELIVERY_SIZES, DELIVERY_SPEEDS } from '@/db/order.config';
-
+import { ref, reactive, computed, shallowRef } from 'vue';
+import getOrderData from '@/db/order.config';
 import { useI18n } from 'vue-i18n';
+import type { YMap } from '@yandex/ymaps3-types';
+import {
+  YandexMap,
+  YandexMapDefaultSchemeLayer,
+  YandexMapDefaultFeaturesLayer,
+  YandexMapDefaultMarker,
+} from 'vue-yandex-maps';
+import useVuelidate from '@vuelidate/core'
+import { helpers, required, minLength } from '@vuelidate/validators'
 
 const { t } = useI18n();
+const { DELIVERY_SIZES, DELIVERY_SPEEDS } = getOrderData();
 
+const map = shallowRef<null | YMap>(null);
+
+const stateForm = reactive({
+    route: {
+        from: '',
+        to: '',
+        size: 'xs',
+        speed: 'regular'
+    },
+    order: {
+        name: '',
+        phone: '',
+        comment: ''
+    }
+})
+
+const rules = computed(() => ({
+  route: {
+    from: { required: helpers.withMessage(t('order.errors.from'), required) },
+    to: { required: helpers.withMessage(t('order.errors.to'), required) },
+  },
+  order: {
+    name: { required: helpers.withMessage(t('order.errors.name'), required) },
+    // Для телефона обычно используют regex, но пока оставим как у тебя (с исправленным minLength)
+    phone: {
+      required: helpers.withMessage(t('order.errors.phone'), required),
+      // Если используешь маску, minLength(18) для "+7 (999) 999-99-99"
+      minLength: helpers.withMessage(t('order.errors.phone_digit'), minLength(5))
+    }
+  }
+}))
+
+const v$ = useVuelidate(rules, stateForm)
+
+const calculationResult = ref<any>(null)
+
+const handleCalculate = async () => {
+  const result = await v$.value.route.$validate()
+  if (!result) return
+  console.log('Расчет маршрута...', stateForm.route)
+}
+
+const handleSubmit = async () => {
+    const result = await v$.value.$validate()
+    if (!result) return
+    console.log('Отправка заказа...', stateForm.order)
+}
+
+const resetForm = () => {
+  Object.keys(stateForm).forEach((key)=>{
+    stateForm[key] = null;
+  })
+  v$.value.$reset()
+}
 </script>
 
 <style scoped>
@@ -257,6 +341,7 @@ const { t } = useI18n();
 
 .calculate-button {
     width: 100%;
+    height: 44px;
 }
 
 .main-result {
@@ -343,6 +428,7 @@ const { t } = useI18n();
 .main-submit-request {
     width: 100%;
     margin-top: 6px;
+    height: 44px;
 }
 
 .main-order-success {

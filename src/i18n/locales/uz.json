@@ -36,14 +36,14 @@
     "to_placeholder": "Qayerga: manzil kiritishni boshlang",
     "package_size": "Posilka hajmi",
     "delivery_speed": "Yetkazib berish tezligi",
-
     "summary": {
       "title": "Buyurtmangizni hisob-kitoblar",
       "distance": "Masofa",
       "delivery_time": "Yetkazib beramiz",
       "tariff": "Tarif",
       "speed": "Yetkazib berish tezligi",
-      "total": "Jami"
+      "total": "Jami",
+      "unit": "₽/km"
     },
     "contacts": {
       "title": "Yetkazib berishni rasmiylashtirish",
@@ -59,6 +59,13 @@
       "title": "Murojaat yuborildi!",
       "number": "Jo‘natish raqami -",
       "message": "Tez orada siz bilan bog‘lanamiz"
+    },
+    "errors": {
+      "from": "Qayerdan maydonini to'ldiring",
+      "to": "Qayerga maydonini to'ldiring",
+      "name": "Ismingizni kiriting",
+      "phone": "Telefoningizni kiriting",
+      "phone_digit": "Telefon faqat raqamlardan iborat bo‘lishi kerak"
     }
   },
   "track": {
@@ -73,12 +80,12 @@
     }
   },
   "sizes": {
-    "xs": "17×12×9 sm,<br> 0.5 kg gacha",
-    "s": "23×19×10 sm,<br> 2 kg gacha",
-    "m": "33×25×15 sm,<br> 5 kg gacha",
-    "l": "31×25×38 sm,<br> 12 kg gacha",
-    "xl": "60×35×30 sm,<br> 18 kg gacha",
-    "max": "120×120×80 sm,<br> 200 kg gacha"
+    "xs": "17×12×9 sm, 0.5 kg gacha",
+    "s": "23×19×10 sm, 2 kg gacha",
+    "m": "33×25×15 sm, 5 kg gacha",
+    "l": "31×25×38 sm, 12 kg gacha",
+    "xl": "60×35×30 sm, 18 kg gacha",
+    "max": "120×120×80 sm, 200 kg gacha"
   },
   "speeds": {
     "regular": "Oddiy",

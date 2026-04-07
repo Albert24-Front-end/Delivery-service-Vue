@@ -29,7 +29,7 @@
     "comment": "Lieferdetails und Kommentare"
   },
   "order": {
-    "title": "Lieferung vornehmen",
+    "title": "Lieferung Bewerbung",
     "subtitle": "Wählen Sie die Parameter zur Berechnung der Sendung",
     "route": "Route",
     "from_placeholder": "Von: Adresse eingeben",
@@ -43,25 +43,30 @@
       "delivery_time": "Lieferzeit",
       "tariff": "Tarif",
       "speed": "Liefergeschwindigkeit",
-      "total": "Gesamt"
+      "total": "Gesamt",
+      "unit": "₽/km"
     },
-
     "contacts": {
       "title": "Bestellung aufgeben",
       "section": "Kontaktdaten",
       "name": "Ihr Name",
       "phone": "Ihre Telefonnummer"
     },
-
     "comment": {
       "title": "Zusätzliche Informationen",
       "placeholder": "Lieferdetails und Kommentare"
     },
-
     "success": {
       "title": "Anfrage gesendet!",
       "number": "Sendungsnummer — ",
       "message": "Wir werden Sie in Kürze kontaktieren"
+    },
+    "errors": {
+      "from": "Füllen Sie das Feld „Von“ aus",
+      "to": "Füllen Sie das Feld „Nach“ aus",
+      "name": "Füllen Sie Ihre Name",
+      "phone": "Füllen Sie Ihre Telefonnumer",
+      "phone_digit": "Die Telefonnummer darf nur aus Ziffern bestehen"
     }
   },
   "track": {
@@ -76,12 +81,12 @@
     }
   },
   "sizes": {
-    "xs": "17×12×9 cm,<br>bis zu 0.5 kg",
-    "s": "23×19×10 cm,<br>bis zu 2 kg",
-    "m": "33×25×15 cm,<br>bis zu 5 kg",
-    "l": "31×25×38 cm,<br>bis zu 12 kg",
-    "xl": "60×35×30 cm,<br>bis zu 18 kg",
-    "max": "120×120×80 cm,<br>bis zu 200 kg"
+    "xs": "17×12×9 cm, bis zu 0.5 kg",
+    "s": "23×19×10 cm, bis zu 2 kg",
+    "m": "33×25×15 cm, bis zu 5 kg",
+    "l": "31×25×38 cm, bis zu 12 kg",
+    "xl": "60×35×30 cm, bis zu 18 kg",
+    "max": "120×120×80 cm, bis zu 200 kg"
   },
   "speeds": {
     "regular": "Normale",

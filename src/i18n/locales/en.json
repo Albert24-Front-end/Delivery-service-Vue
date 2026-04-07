@@ -42,7 +42,8 @@
       "delivery_time": "Delivery time",
       "tariff": "Tariff",
       "speed": "Delivery speed",
-      "total": "Total"
+      "total": "Total",
+      "unit": "₽/km"
     },
     "contacts": {
       "title": "Checkout",
@@ -58,6 +59,13 @@
       "title": "Request submitted!",
       "number": "Shipment number — ",
       "message": "We will contact you shortly"
+    },
+    "errors": {
+      "from": "Fill in the field From",
+      "to": "Fill in the field To",
+      "name": "Fill in your name",
+      "phone": "Fill in your phone",
+      "phone_digit": "The phone must contain only digits"
     }
   },
   "track": {
@@ -72,12 +80,12 @@
     }
   },
   "sizes": {
-    "xs": "17×12×9 cm,<br>up to 0.5 kg",
-    "s": "23×19×10 cm,<br>up to 2 kg",
-    "m": "33×25×15 cm,<br>up to 5 kg",
-    "l": "31×25×38 cm,<br>up to 12 kg",
-    "xl": "60×35×30 cm,<br>up to 18 kg",
-    "max": "120×120×80 cm,<br>up to 200 kg"
+    "xs": "17×12×9 cm, up to 0.5 kg",
+    "s": "23×19×10 cm, up to 2 kg",
+    "m": "33×25×15 cm, up to 5 kg",
+    "l": "31×25×38 cm, up to 12 kg",
+    "xl": "60×35×30 cm, up to 18 kg",
+    "max": "120×120×80 cm, up to 200 kg"
   },
   "speeds": {
     "regular": "Regular",
