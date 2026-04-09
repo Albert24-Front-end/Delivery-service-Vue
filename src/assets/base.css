@@ -102,7 +102,7 @@ body {
     background: rgb(241 241 241);
 }
 
-.main-field {
+.main-field, .order-field {
     display: flex;
     align-items: center;
     margin-top: 6px;

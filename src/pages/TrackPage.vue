@@ -73,14 +73,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useDeliveryData } from '@/composables/useDeliveryData';
+import { useTrackDelivery } from '@/composables/useDeliveryData';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css'
 
 const { t } = useI18n()
 const trackNumber = ref('')
-const { data, error, loading, fetchDeliveryInfo } = useDeliveryData();
+const { data, error, loading, fetchDeliveryInfo } = useTrackDelivery();
 
 watch(error, (newError) => {
     if (newError) {

@@ -12,13 +12,14 @@
     "delivery": "Pünktliche Lieferung",
     "tariffs": "Günstige Tarife"
   },
-  "main_title": "Paketversand zwischen und innerhalb von Ländern. Sicher. Schnell. Zuverlässig und sicher!",
+  "main_title": "Paketversand zwischen und innerhalb von Ländern. Schnell. Zuverlässig und sicher!",
   "buttons": {
     "order": "Lieferung bestellen",
     "track": "Paket verfolgen",
     "get_track_info": "Verfolgen",
     "calculate": "Berechnen",
-    "send": "Bewerbung einreichen"
+    "send": "Bewerbung einreichen",
+    "build_new": "Erneut erstellen"
   },
   "inputs": {
     "get_track_info": "Geben Sie die Paketnummer ein",
@@ -77,7 +78,8 @@
       "success": "Informationen zum Antrag erhalten!",
       "server_failure": "Informationen zum Antrag konnten nicht abgerufen werden",
       "fill_number": "Füllen Sie die Sendungsnummer aus",
-      "input_error": "Geben Sie die korrekte Sendungsnummer ein"
+      "input_error": "Geben Sie die korrekte Sendungsnummer ein",
+      "server_fail": "Die Bestellung könnte nicht erstellt werden"
     }
   },
   "sizes": {

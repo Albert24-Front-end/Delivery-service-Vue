@@ -18,7 +18,8 @@
     "track": "Jo‘natmani kuzatish",
     "get_track_info": "Kuzatish",
     "calculate": "Hisoblash",
-    "send": "Ariza yuborish"
+    "send": "Ariza yuborish",
+    "build_new": "Yana buyurtma berish"
   },
   "inputs": {
     "get_track_info": "Paket raqamini kiriting",
@@ -65,7 +66,8 @@
       "to": "Qayerga maydonini to'ldiring",
       "name": "Ismingizni kiriting",
       "phone": "Telefoningizni kiriting",
-      "phone_digit": "Telefon faqat raqamlardan iborat bo‘lishi kerak"
+      "phone_digit": "Telefon faqat raqamlardan iborat bo‘lishi kerak",
+      "server_fail": "Buyurtma yaratilmadi"
     }
   },
   "track": {

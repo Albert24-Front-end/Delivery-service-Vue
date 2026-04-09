@@ -29,7 +29,7 @@
             <div class="main-fields">
                 <div class="main-field" id="fromField" :class="{ 'error': v$.route.from.$error }">
                     <div class="main-pin"></div>
-                    <input id="from" v-model="stateForm.route.from" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off" @blur="v$.route.from.$touch()"/>
+                    <input id="from" type="text" v-model="stateForm.route.from" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off" @blur="v$.route.from.$touch()"/>
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
 
@@ -37,23 +37,23 @@
 
                 <div class="main-field" id="toField" :class="{ 'error': v$.route.to.$error }">
                     <div class="main-pin"></div>
-                    <input id="to" v-model="stateForm.route.from" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off" @blur="v$.route.to.$touch()"/>
+                    <input id="to" type="text" v-model="stateForm.route.to" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off" @blur="v$.route.to.$touch()"/>
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
                 <label for="from" v-if="v$.route.to.$error" class="input-error">{{ t('order.errors.to') }}</label>
             </div>
         </div>
 
-        <div class="main-package">
+        <div class="main-package" v-if="!orderStore.lastOrderId">
             <div class="main-block-title">{{ t('order.package_size') }}</div>
 
             <div class="main-sizes">
-                    <div v-for="size of DELIVERY_SIZES" :key="size.value" class="main-size-card">
+                    <div v-for="size of DELIVERY_SIZES" :key="size.value" class="main-size-card" :class="{'is-active': stateForm.route.size === size.value}" @click="stateForm.route.size = size.value">
                         <div class="main-size-top">
                             <div class="main-size-label">{{ size.value.toUpperCase() }}</div>
                             <div class="main-size-rate">{{ size.rate }} {{ t('order.summary.unit') }}</div>
                         </div>
-                        <div class="main-size-media">
+                        <div class="main-size-media" :class="{ 'main-size-media-palleta': size.value === 'max' }">
                             <img :src="`/src/assets/images/sizes/${size.value}.png`" alt="size"/>
                         </div>
                         <div class="main-size-description" v-html="size.description()"></div>
@@ -61,68 +61,53 @@
             </div>
         </div>
 
-        <div class="main-speed">
+        <div class="main-speed" v-if="!orderStore.lastOrderId">
             <div class="main-block-title">{{ t('order.delivery_speed') }}</div>
 
             <div class="main-speeds">
-                    <div v-for="speed of DELIVERY_SPEEDS" :key="speed.value" class="main-speed-card">
+                    <div v-for="speed of DELIVERY_SPEEDS" :key="speed.value" class="main-speed-card" :class="{'is-active': stateForm.route.speed === speed.value}" @click="stateForm.route.speed = speed.value">
                         <img class="main-speed-media" :src="`/src/assets/images/icons/${speed.value}.svg`" alt="Speed"/>
                         <div class="main-speed-description">{{ speed.label() }}</div>
                     </div>
             </div>
         </div>
 
-        <div class="main-calculate-block" >
-            <button id="calc" class="button calculate-button" type="button" :disabled="v$.$invalid" @click="handleCalculate">{{ t('buttons.calculate') }}</button>
+        <div class="main-calculate-block" v-if="!orderStore.lastOrderId">
+            <button id="calc" class="button calculate-button" type="button" :disabled="v$.route.$invalid" @click="handleCalculate">{{ t('buttons.calculate') }}</button>
         </div>
 
 
-        <div class="main-result" id="result">
+        <div class="main-result" id="result" v-if="calculationResult">
             <div class="main-result-title">{{ t('order.summary.title') }}</div>
             <div class="main-result-lines">
-                <div class="main-result-line"><span>{{ t('order.summary.distance') }}</span><span id="distanceValue"></span></div>
-                <div class="main-result-line"><span>{{ t('order.summary.delivery_time') }}</span><span id="durationValue"></span></div>
-                <div class="main-result-line"><span>{{ t('order.summary.tariff') }}</span><span id="rateValue"></span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.distance') }}</span><span id="distanceValue">{{ calculationResult.distance }}</span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.delivery_time') }}</span><span id="durationValue">{{ calculationResult.duration }}</span></div>
+                <div class="main-result-line"><span>{{ t('order.summary.tariff') }}</span><span id="rateValue">{{ calculationResult.rate }}</span></div>
                 <div class="main-result-line"><span>{{ t('order.summary.speed') }}</span><span id="speedValue"></span></div>
             </div>
             <div class="main-price">
                 <div class="main-price-label">{{ t('order.summary.total') }}</div>
-                <div class="main-price-value" id="totalValue"></div>
+                <div class="main-price-value" id="totalValue">{{ calculationResult.total }}</div>
             </div>
         </div>
 
-        <div class="main-order-box">
+        <div class="main-order-box" v-if="!orderStore.lastOrderId">
             <div class="main-order-form" id="orderForm">
                 <div class="main-order-title">{{ t('order.contacts.title') }}</div>
                 <div class="main-block-info-row">
                     <div class="main-block-title">{{ t('order.contacts.section') }}</div>
                     <div class="order-fields">
-                        <div class="main-field">
+                        <div class="order-field">
                             <input :placeholder="t('order.contacts.name')" autocomplete="off" @blur="v$.order.name.$touch()" v-model="stateForm.order.name"/>
                         </div>
-                        <div class="main-field">
-                            <input :placeholder="t('order.contacts.phone')" autocomplete="off" inputmode="tel" appOnlyNumbers @blur="v$.order.phone.$touch()" v-model="stateForm.order.phone"/>
+                        <div class="order-field">
+                            <input :placeholder="t('order.contacts.phone')" autocomplete="off" inputmode="numeric" appOnlyNumbers @input="onPhoneInput" @blur="v$.order.phone.$touch()" v-model="stateForm.order.phone"/>
                         </div>
+                        <label v-if="v$.order.name.$error" class="input-error error-label name-error">{{ t('order.errors.name') }}</label>
                         <div class="error-labels">
-                            <label v-if="v$.order.name.$error" class="input-error">{{ t('order.errors.name')   }}</label>
-                            <label v-if="v$.order.phone.$error" class="input-error">{{ t('order.errors.phone')   }}</label>
+                            <label v-if="v$.order.phone.$error" class="input-error">{{ t('order.errors.phone') }}</label>
                             <label v-if="v$.order.phone.minLength.$error" class="input-error">{{ t('order.errors.phone_digit') }}</label>
                         </div>
-                        <!-- <div>
-                            @if(this.orderForm.get('phone')?.errors?.['pattern']) {
-                                <label for="customerPhone" class="input-error">{{ t('order.errors.phone_digit') }}</label>
-                            }
-                        </div>
-                        <div>
-                            @if (this.orderForm.get('name')?.invalid && (this.orderForm.get('name')?.dirty || this.orderForm.get('name')?.touched)) {
-                                <label for="customerName" class="input-error">{{ t('order.errors.name') }}</label>
-                            }
-                        </div>
-                        <div>
-                            @if (this.orderForm.get('phone')?.invalid && (this.orderForm.get('phone')?.dirty || this.orderForm.get('phone')?.touched)) {
-                                <label for="customerPhone" class="input-error">{{ t('order.errors.phone') }}</label>
-                            }
-                        </div> -->
                     </div>
                 </div>
                 <div class="main-block-info-row extra-info">
@@ -131,24 +116,27 @@
                         <textarea id="comment" :placeholder="t('order.comment.placeholder')" formControlName="comment" v-model="stateForm.order.comment"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="button main-submit-request" type="button" :disabled="v$.$invalid" @click="handleSubmit">{{ t('buttons.send') }}</button>
+                <button id="submit" class="button main-submit-request" type="button" :disabled="v$.order.$invalid || !calculationResult" @click="handleSubmit">{{ t('buttons.send') }}</button>
             </div>
-
-            <div class="main-order-success" id="orderSuccess">
-                <div class="main-success-icon">✓</div>
-                <div class="main-success-title">{{ t('order.success.title') }}</div>
-                <div class="main-success-title">{{ t('order.success.number') }}<span id="orderId"></span></div>
-                <div class="main-success-subtitle">{{ t('order.success.message') }}</div>
-            </div>
+        </div>
+        <div v-else class="main-order-success is-visible" id="orderSuccess" >
+            <div class="main-success-icon">✓</div>
+            <div class="main-success-title">{{ t('order.success.title') }}</div>
+            <div class="main-success-title">{{ t('order.success.number') }}<span id="orderId">{{ orderStore.lastOrderId }}</span></div>
+            <div class="main-success-subtitle">{{ t('order.success.message') }}</div>
+            <button @click="orderStore.clear()" class="text-blue-500 underline mt-2 text-sm">{{ t('buttons.build_new') }}</button>
         </div>
     </div>
 </aside>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, shallowRef } from 'vue';
+import { ref, reactive, computed, shallowRef, onMounted } from 'vue';
 import getOrderData from '@/db/order.config';
+import { useOrderStore } from '@/store/app'
+import { useCreateDelivery } from '@/composables/useDeliveryData'
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify'
 import type { YMap } from '@yandex/ymaps3-types';
 import {
   YandexMap,
@@ -160,9 +148,17 @@ import useVuelidate from '@vuelidate/core'
 import { helpers, required, minLength } from '@vuelidate/validators'
 
 const { t } = useI18n();
+const orderStore = useOrderStore()
 const { DELIVERY_SIZES, DELIVERY_SPEEDS } = getOrderData();
+const { result, error, loading, createOrderDelivery } = useCreateDelivery();
 
 const map = shallowRef<null | YMap>(null);
+const mapRoute = shallowRef<null>(null);
+const orderId = orderStore.lastOrderId;
+const calculationResult = ref<any>(null)
+
+let mapInstance: any = null
+let multiRoute: any = null
 
 const stateForm = reactive({
     route: {
@@ -189,31 +185,127 @@ const rules = computed(() => ({
     phone: {
       required: helpers.withMessage(t('order.errors.phone'), required),
       // Если используешь маску, minLength(18) для "+7 (999) 999-99-99"
-      minLength: helpers.withMessage(t('order.errors.phone_digit'), minLength(5))
+      minLength: helpers.withMessage(t('order.errors.phone_digit'), minLength(5)),
+      numeric: helpers.withMessage(t('order.errors.phone_digit'), helpers.regex(/^[0-9]+$/))
     }
   }
 }))
 
+declare let ymaps: any;
+const onPhoneInput = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    target.value = target.value.replace(/\D/g, '')
+    stateForm.order.phone = target.value
+}
+
 const v$ = useVuelidate(rules, stateForm)
 
-const calculationResult = ref<any>(null)
+onMounted(() => {
+    ymaps.ready(() => {
+        mapInstance = new ymaps.Map('map', {
+            center: [55.751244, 37.618423],
+            zoom: 10,
+            controls: ['zoomControl']
+        })
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const coords = [pos.coords.latitude, pos.coords.longitude]
+                mapInstance.setCenter(coords, 15)
+
+                ymaps.geocode(coords).then((res: any) => {
+                    const first = res.geoObjects.get(0)
+                    if (first) {
+                        stateForm.route.from = first.getAddressLine()
+                        mapInstance.geoObjects.add(first)
+                    }
+                })
+            })
+        }
+
+        const suggestFrom = new ymaps.SuggestView('from');
+        const suggestTo = new ymaps.SuggestView('to');
+
+        suggestFrom.events.add('select', (e: any) => stateForm.route.from = e.get('item').value)
+        suggestTo.events.add('select', (e: any) => stateForm.route.to = e.get('item').value)
+    })
+})
 
 const handleCalculate = async () => {
-  const result = await v$.value.route.$validate()
-  if (!result) return
-  console.log('Расчет маршрута...', stateForm.route)
+  const isRouteValid = await v$.value.route.$validate()
+  if (!isRouteValid) return
+
+  if (multiRoute) mapInstance.geoObjects.remove(multiRoute)
+
+  multiRoute = new ymaps.multiRouter.MultiRoute({
+    referencePoints: [stateForm.route.from, stateForm.route.to]
+  }, { boundsAutoApply: true })
+
+  mapInstance.geoObjects.add(multiRoute)
+
+  multiRoute.model.events.add('requestsuccess', () => {
+    const activeRoute = multiRoute.getActiveRoute()
+    if (activeRoute) {
+      const km = activeRoute.properties.get('distance').value / 1000
+      const config = DELIVERY_SIZES.value.find(s => s.value === stateForm.route.size)!
+
+      let total = Math.max(config.min, Math.ceil(km * config.rate))
+      let duration = Math.min(30, 1 + Math.ceil(km / 80))
+
+      if (stateForm.route.speed === 'fast') {
+        total = Math.ceil(total * 1.15)
+        duration = Math.ceil(duration * 0.7)
+      }
+
+      calculationResult.value = {
+        distance: `${km.toFixed(1)} км`,
+        duration: `${duration} дн.`,
+        rate: `${config.rate} ₽/км`,
+        total
+      }
+      toast.success('Маршрут построен')
+    }
+  })
 }
 
 const handleSubmit = async () => {
-    const result = await v$.value.$validate()
-    if (!result) return
-    console.log('Отправка заказа...', stateForm.order)
+    const isFormValid = await v$.value.$validate()
+    if (!isFormValid || !calculationResult.value) {
+      toast.warn('Заполните все поля и рассчитайте доставку')
+      return
+    }
+
+    const payload = {
+        customer: {
+            name: stateForm.order.name,
+            phone: stateForm.order.phone,
+            comment: stateForm.order.comment,
+        },
+        calculation: {
+            from: stateForm.route.from,
+            to: stateForm.route.to,
+            ...calculationResult.value
+        },
+        createdAt: new Date().toISOString(),
+    }
+
+    await createOrderDelivery(payload)
+
+    if (error.value) {
+      toast.error(error.value)
+    } else if (result.value) {
+      // Сохраняем реальный ID из ответа сервера
+      orderStore.saveOrder(result.value.id, calculationResult.value)
+      toast.success(t('order.success.title'))
+      resetForm()
+    }
 }
 
 const resetForm = () => {
-  Object.keys(stateForm).forEach((key)=>{
-    stateForm[key] = null;
-  })
+  stateForm.route.from = ''
+  stateForm.route.to = ''
+  stateForm.order.name = ''
+  stateForm.order.phone = ''
+  stateForm.order.comment = ''
   v$.value.$reset()
 }
 </script>
@@ -417,7 +509,25 @@ const resetForm = () => {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 10px;
-    margin-top: 6px;
+    grid-template-areas:
+        "name phone"
+        "nameError phoneError";
+}
+
+.main-field:nth-child(1) {
+    grid-area: name;
+}
+
+.main-field:nth-child(2) {
+    grid-area: phone;
+}
+
+.input-error {
+    grid-area: nameError;
+}
+
+.error-labels {
+    grid-area: phoneError;
 }
 
 .main-block-info-row.extra-info {
@@ -505,6 +615,12 @@ const resetForm = () => {
     line-height: 1.2;
 }
 
+.error-labels {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 @media (max-width: 767px) {
     .main {
         left: 10px;
@@ -537,6 +653,11 @@ const resetForm = () => {
 @media (max-width: 380px) {
     .order-fields {
         grid-template-columns: repeat(1, 1fr);
+        grid-template-areas:
+            "name"
+            "nameError"
+            "phone"
+            "phoneError";
     }
 }
 </style>
