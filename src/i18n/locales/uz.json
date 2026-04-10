@@ -44,7 +44,9 @@
       "tariff": "Tarif",
       "speed": "Yetkazib berish tezligi",
       "total": "Jami",
-      "unit": "₽/km"
+      "price_per_km": "₽/km",
+      "km": "km",
+      "day": "kun"
     },
     "contacts": {
       "title": "Yetkazib berishni rasmiylashtirish",
@@ -67,8 +69,11 @@
       "name": "Ismingizni kiriting",
       "phone": "Telefoningizni kiriting",
       "phone_digit": "Telefon faqat raqamlardan iborat bo‘lishi kerak",
-      "server_fail": "Buyurtma yaratilmadi"
-    }
+      "server_fail": "Buyurtma yaratilmadi",
+      "no_suggest": ""
+    },
+    "route_success": "Yo‘nalish hisoblandi",
+    "route_failure": "Manzillardan biri topilmadi"
   },
   "track": {
     "from": "Qayerdan",

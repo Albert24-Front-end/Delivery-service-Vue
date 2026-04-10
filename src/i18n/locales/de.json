@@ -45,7 +45,9 @@
       "tariff": "Tarif",
       "speed": "Liefergeschwindigkeit",
       "total": "Gesamt",
-      "unit": "₽/km"
+      "price_per_km": "₽/km",
+      "km": "km",
+      "day": "Tag | Tage"
     },
     "contacts": {
       "title": "Bestellung aufgeben",
@@ -67,8 +69,12 @@
       "to": "Füllen Sie das Feld „Nach“ aus",
       "name": "Füllen Sie Ihre Name",
       "phone": "Füllen Sie Ihre Telefonnumer",
-      "phone_digit": "Die Telefonnummer darf nur aus Ziffern bestehen"
-    }
+      "phone_digit": "Die Telefonnummer darf nur aus Ziffern bestehen",
+      "server_fail": "Buyurtma yaratilmadi",
+      "no_suggest": "Die Bestellung wurde nicht erstellt"
+    },
+    "route_success": "Route berechnet",
+    "route_failure": "Eine der Adressen wurde nicht gefunden"
   },
   "track": {
     "from": "Woher",

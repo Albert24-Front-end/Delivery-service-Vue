@@ -44,7 +44,9 @@
       "tariff": "Tariff",
       "speed": "Delivery speed",
       "total": "Total",
-      "unit": "₽/km"
+      "price_per_km": "₽/km",
+      "km": "km",
+      "day": "day | days"
     },
     "contacts": {
       "title": "Checkout",
@@ -66,8 +68,12 @@
       "to": "Fill in the field To",
       "name": "Fill in your name",
       "phone": "Fill in your phone",
-      "phone_digit": "The phone must contain only digits"
-    }
+      "phone_digit": "The phone must contain only digits",
+      "server_fail": "Could not calculate the order",
+      "no_suggest": ""
+    },
+    "route_success": "Route calculated",
+    "route_failure": "Could not find one of the addresses"
   },
   "track": {
     "from": "From",

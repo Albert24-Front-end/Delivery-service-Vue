@@ -16,6 +16,7 @@ app.use(createPinia())
 app.use(
   createYmaps({
     apikey: '4e72d839-394a-4c9f-830f-592f62c600e6',
+    importModules: ['@yandex/ymaps3-controls', '@yandex/ymaps3-router'],
   }),
 )
 
