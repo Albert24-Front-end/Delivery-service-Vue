@@ -17,15 +17,11 @@
         <yandex-map-default-features-layer/>
         <!-- <yandex-map-default-marker :settings="{ coordinates: [69.164708, 41.184022] }"/> -->
         <yandex-map-feature
-            v-if="routeCoordinates.length"
+            v-if="route"
             :settings="{
-                id: 'round-line',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: routeCoordinates,
-                },
+                ...route,
                 style: {
-                    stroke: [{color: '#007bff', width: 5}]
+                    stroke: [{color: '#e100ff', width: 5}]
                 },
             }"
         />
@@ -50,7 +46,7 @@
             <div class="main-fields">
                 <div class="main-field" id="fromField" :class="{ 'error': v$.route.from.$error }">
                     <div class="main-pin"></div>
-                    <v-select label="label" class="address-select" v-model="stateForm.route.from" :options="suggestions.from" :filterable="false" @search="(q) => onSearch(q, 'from')" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.from_placeholder')" @blur="v$.route.from.$touch()">
+                    <v-select label="label" class="address-select" v-model="stateForm.route.from" :options="suggestions.from" :filterable="false" @search="(q) => onSearch(q, 'from')" @update:modelValue="onPointSelected" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.from_placeholder')" @blur="v$.route.from.$touch()">
                         <template #no-options>{{ t('order.errors.no_suggest') }}</template>
                     </v-select>
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
@@ -60,7 +56,7 @@
 
                 <div class="main-field" id="toField" :class="{ 'error': v$.route.to.$error }">
                     <div class="main-pin"></div>
-                    <v-select label="label" class="address-select" v-model="stateForm.route.to" :options="suggestions.to" :filterable="false" @search="(q) => onSearch(q, 'to')" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.to_placeholder')"  @blur="v$.route.to.$touch()">
+                    <v-select label="label" class="address-select" v-model="stateForm.route.to" :options="suggestions.to" :filterable="false" @search="(q) => onSearch(q, 'to')" @update:modelValue="onPointSelected" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.to_placeholder')"  @blur="v$.route.to.$touch()">
                         <template #no-options>{{ t('order.errors.no_suggest') }}</template>
                     </v-select>
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
@@ -141,7 +137,7 @@
                         <textarea id="comment" :placeholder="t('order.comment.placeholder')" formControlName="comment" v-model="stateForm.order.comment"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="button main-submit-request" type="button" :disabled="v$.order.$invalid || !calculationResult" @click="handleSubmit">{{ t('buttons.send') }}</button>
+                <button id="submit" class="button main-submit-request" type="button" :disabled="v$.order.$invalid" @click="handleSubmit">{{ t('buttons.send') }}</button>
             </div>
         </div>
         <div v-else class="main-order-success is-visible" id="orderSuccess" >
@@ -156,14 +152,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, shallowRef, onMounted } from 'vue';
+import { ref, reactive, watch, computed, shallowRef, onMounted } from 'vue';
 import getOrderData from '@/db/order.config';
 import { useOrderStore } from '@/store/app'
 import { useCreateDelivery } from '@/composables/useDeliveryData'
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify'
-import type { YMap } from '@yandex/ymaps3-types';
+import type { YMap, RouteFeature, LngLat, YMapMarkerEventHandler, YMapLocationRequest, BaseRouteResponse } from '@yandex/ymaps3-types';
 import {
+  getLocationFromBounds,
+  yandexMapLoadStatus,
   YandexMap,
   YandexMapDefaultSchemeLayer,
   YandexMapDefaultFeaturesLayer,
@@ -180,13 +178,16 @@ const orderStore = useOrderStore()
 const { DELIVERY_SIZES, DELIVERY_SPEEDS } = getOrderData();
 const { result, error, loading, createOrderDelivery } = useCreateDelivery();
 
+const location = ref<YMapLocationRequest>({
+    center: [69.164708, 41.184022],
+    zoom: 5,
+})
 const map = shallowRef<null | YMap>(null);
 const calculationResult = ref<any>(null)
 
-const routeCoordinates = ref<number[][]>([]);
 const points = reactive({
-  from: null,
-  to: null,
+  from: null as LngLat | null,
+  to: null as LngLat | null,
 });
 const suggestions = reactive({ from: [], to: [] });
 
@@ -230,15 +231,6 @@ const onPhoneInput = (e: Event) => {
 
 const v$ = useVuelidate(rules, stateForm)
 
-const onSearch = async (query: string, field: 'from' | 'to') => {
-    if (query.length < 3) return;
-    const results = await ymaps3.search({text: query});
-    suggestions[field] = results.map((item: any) => ({
-        label: item.properties.name + (item.properties.description ? `, ${item.properties.description}` : ''),
-        coords: item.geometry.coordinates
-    }))
-}
-
 onMounted(() => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -252,12 +244,97 @@ onMounted(() => {
     }
 })
 
+const onSearch = async (query: string, field: 'from' | 'to') => {
+    if (query.length < 3) return;
+    const results = await ymaps3.search({text: query});
+    suggestions[field] = results.map((item: any) => ({
+        label: item.properties.name + (item.properties.description ? `, ${item.properties.description}` : ''),
+        coords: item.geometry.coordinates
+    }))
+}
+
+// const pointAName = shallowRef('');
+// const pointBName = shallowRef('');
+const route = shallowRef<RouteFeature | null>(null);
+
+const onPointSelected = () => {
+    if (stateForm.route.from?.coords) points.from = stateForm.route.from.coords;
+    if (stateForm.route.to?.coords) points.to = stateForm.route.to.coords;
+};
+
+async function fetchRoute(startCoordinates: LngLat, endCoordinates: LngLat) {
+    const result = await ymaps3.route({
+        points: [startCoordinates, endCoordinates],
+        type: 'driving',
+        bounds: true,
+    })
+  console.log('routes response:', result)
+
+  if (!result[0]) {
+    toast.error(t('order.route_failure'))
+    return
+  }
+  const firstRoute = result[0].toRoute();
+  console.log('firstRoute:', firstRoute)
+  console.log('firstRoute.properties:', firstRoute.properties)
+  console.log('geometry coords length:', firstRoute.geometry.coordinates.length)
+  if (firstRoute.geometry.coordinates.length === 0) return;
+
+  return firstRoute;
+}
+
+// const routeHandler = async (newRoute?: RouteFeature) => {
+//     if (!newRoute) {
+//         alert('Маршрут не найден');
+//         route.value = null;
+//         return;
+//     }
+
+//     route.value = newRoute;
+
+//     if(newRoute.properties.bounds) {
+//         const newLocation = await getLocationFromBounds({
+//             bounds: newRoute.properties.bounds,
+//             map: map.value!,
+//         })
+
+//         location.value = {
+//             center: newLocation.center,
+//             zoom: Math.floor(newLocation.zoom) - 1,
+//             duration: 300,
+//         }
+//     };
+// }
+
+// const onRouteResult = (result: BaseRouteResponse, type: AvailableTypes) => {
+//     const mapPoints = result.toRoute();
+//     console.log(mapPoints);
+//     routeHandler(mapPoints);
+
+//     const startCoords = mapPoints.geometry.coordinates[0];
+//     const endCoords = mapPoints.geometry.coordinates[mapPoints.geometry.coordinates.length - 1];
+//     points.from = startCoords;
+//     points.to = endCoords;
+// }
+
+// watch(yandexMapLoadStatus, async status => {
+//     if (status !== 'loaded') return;
+
+//     const fetchedRoute = await fetchRoute(points.from, points.to);
+//     await routeHandler(fetchedRoute);
+// }, { immediate: true })
+
+
 const handleCalculate = async () => {
+  console.log('ymaps3 status:', typeof ymaps3)
+  console.log('map value:', map.value)
   const isRouteValid = await v$.value.route.$validate()
   if (!isRouteValid) return
 
-  const fromCoords = stateForm.route.from.coords;
-  const toCoords = stateForm.route.to.coords;
+  const fromCoords = stateForm.route.from?.coords;
+  const toCoords = stateForm.route.to?.coords;
+  console.log('coords:', fromCoords, toCoords)
+
 
   if (!fromCoords[0] || !toCoords[0]) {
     toast.error(t('order.route_failure'))
@@ -267,18 +344,39 @@ const handleCalculate = async () => {
   points.from = fromCoords;
   points.to = toCoords;
 
-  const route = await ymaps3.route({
-    points: [fromCoords, toCoords],
-    type: 'driving'
-  })
+  try {
+//   const routes = await ymaps3.route({
+//     points: [fromCoords, toCoords],
+//     type: 'driving',
+//     bounds: true,
+//   })
+//   console.log('routes response:', routes)
 
-  if (route && route.geometry) {
-      routeCoordinates.value = route.geometry.coordinates;
+//   if (!routes[0]) {
+//     toast.error(t('order.route_failure'))
+//     return
+//   }
 
-      const distanceInMeters = route.properties.distance;
-      const km = distanceInMeters / 1000;
-      const config = DELIVERY_SIZES.value.find(s => s.value === stateForm.route.size);
+//   const firstRoute = routes[0].toRoute();
+//   console.log('firstRoute:', firstRoute)
+//     console.log('firstRoute.properties:', firstRoute.properties)
+//     console.log('geometry coords length:', firstRoute.geometry.coordinates.length)
+//   if (firstRoute.geometry.coordinates.length === 0) return;
 
+//   route.value = firstRoute;
+//   console.log('Route object:', route.value)
+  const firstRoute = await fetchRoute(fromCoords, toCoords);
+  if (!firstRoute || firstRoute.geometry.coordinates.length === 0) {
+    toast.error(t('order.route_failure'));
+    return;
+  }
+  route.value = firstRoute;
+  const distanceInMeters = firstRoute.properties.length;
+  const km = distanceInMeters / 1000;
+  const config = DELIVERY_SIZES.value.find(s => s.value === stateForm.route.size);
+
+
+  if (config) {
       let total = Math.max(config.min, Math.ceil(km * config.rate));
       let duration = Math.min(30, 1 + Math.ceil(km / 80));
 
@@ -288,18 +386,29 @@ const handleCalculate = async () => {
       }
 
       calculationResult.value = {
-        distance: `${km.toFixed(1)} км`,
-        duration: `${duration} дн.`,
-        rate: `${config.rate} ₽/км`,
+        distance: `${km.toFixed(1)} ${t('order.summary.km')}`,
+        duration: `${duration} ${t('order.summary.day')}`,
+        rate: `${config.rate} ${t('order.summary.price_per_km')}`,
         total,
-        speed: stateForm.route.speed === 'fast' ? 'Экспресс' : 'Обычная'
+        speed: stateForm.route.speed === 'fast' ? `${t('speeds.fast')}` : `${t('speeds.regular')}`
       };
+  }
 
-      if (map.value && route.properties.bounds) {
-        map.value.setLocation({ bounds: route.properties.bounds, duration: 400 });
-      }
-      toast.success(t('order.route_success'));
-    }
+  if (map.value && firstRoute.properties.bounds) {
+    const newLocation = await getLocationFromBounds({
+        bounds: firstRoute.properties.bounds,
+        map: map.value,
+    });
+
+    location.value = {
+        ...newLocation,
+        duration: 500
+    };
+  }
+  toast.success(t('order.route_success'));
+  } catch (e) {
+    console.error('route error:', e)
+  }
 }
 
 const handleSubmit = async () => {
@@ -342,7 +451,6 @@ const resetForm = () => {
   stateForm.order.phone = ''
   stateForm.order.comment = ''
   calculationResult.value = null
-  routeCoordinates.value = []
   points.from = null
   points.to = null
   v$.value.$reset()
@@ -355,6 +463,8 @@ const resetForm = () => {
     /* background-size: cover; */
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100vh;
 }
 
 .main {

@@ -1343,20 +1343,20 @@
   dependencies:
     spin.js "^4.1.2"
 
-"@yandex/ymaps3-types@>=1.0.18856213":
-  version "1.0.19072130"
-  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-types/-/ymaps3-types-1.0.19072130.tgz#67618883cf60a80fd5885a5c2281f94aa87a8dee"
-  integrity sha512-3loWJh1NFSYR+L8HdcoqIXhy/xZHVDgZ4z//hWFbdauPmIJxF6ZHj+mtBCPLwEXTyMUH8n9nwo+KCllnbPqjHQ==
+"@yandex/ymaps3-types@>=1.0.19287993":
+  version "1.0.19345674"
+  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-types/-/ymaps3-types-1.0.19345674.tgz#d84a6060f7a4b6e7349a379e70a34ab5e034e2fb"
+  integrity sha512-7R16mJueDKCIWzIvhFBgZvl5tVr8UYQZd79bga/iVSk1+wBe99w34/lcUHTnsWQMSSZzKTVL+ncdPpqTH8iMvw==
 
 "@yandex/ymaps3-web-mercator-projection@>=0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-web-mercator-projection/-/ymaps3-web-mercator-projection-0.0.5.tgz#84f043e8274a5b717b64e0bedff28a19b7df147e"
   integrity sha512-yRGugQDq0y7x8sAKzMqRj92i4IFeSW5wOEVf6tmVIO/H/XEt3hhvI9BsSwZToUfoV957dPbvFrPwV345ndctdQ==
 
-"@yandex/ymaps3-world-utils@>=0.0.18856213":
-  version "0.0.19072130"
-  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-world-utils/-/ymaps3-world-utils-0.0.19072130.tgz#69d93967f6a914e0f14b6c20b24976af7990435d"
-  integrity sha512-Uy3MQ32LxgTciu/Mq0LJB6Gj6bDfW5vz7WSP5mS3y1hSV1qJgd3/ektKSEtDcG37ojRU0O7eF94ZHGnlNajctA==
+"@yandex/ymaps3-world-utils@>=0.0.19230700":
+  version "0.0.19230700"
+  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-world-utils/-/ymaps3-world-utils-0.0.19230700.tgz#ff0b33006ee93f2251245b22ee981755a9e1c5bb"
+  integrity sha512-3sen76szCmcMsfBwgTTXgxHlKj1RQRfwpkbsUY8s5TJ77Bq3ElG9eor7ZIXZQ4dysf7ZpbJxU9EztFyfXmMnFg==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -2743,10 +2743,10 @@ vue-tsc@^3.2.5:
     "@volar/typescript" "2.4.28"
     "@vue/language-core" "3.2.5"
 
-vue-yandex-maps@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-3.0.2.tgz#72da361e47e97c1b3e27a53745321e1859ce1a54"
-  integrity sha512-wU8PzhcazhzRNt1z3Ttb1aLOUOXylcb/OAd9eIuAJD4s2fh0v+/rN4vFbAsC7uyw06hm8U8xOPjc60CEg0Yxxg==
+vue-yandex-maps@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-3.0.4.tgz#527d8c73cc2028180344d7c9649b1c5aa1a076b1"
+  integrity sha512-uQxhym7fE+ZrEXHZKUrLwEwWU4CApGHapjDDiB83xZdnxNbXoO9EHh0SGTfbWU6IzA4qXx5w6bgyeWDMLTwo9g==
   dependencies:
     "@yandex/ymaps3-cartesian-projection" ">=0.0.6"
     "@yandex/ymaps3-clusterer" ">=0.0.12"
@@ -2758,9 +2758,9 @@ vue-yandex-maps@^3.0.2:
     "@yandex/ymaps3-resizer" ">=0.0.2"
     "@yandex/ymaps3-signpost" ">=0.0.2"
     "@yandex/ymaps3-spinner" ">=0.0.2"
-    "@yandex/ymaps3-types" ">=1.0.18856213"
+    "@yandex/ymaps3-types" ">=1.0.19287993"
     "@yandex/ymaps3-web-mercator-projection" ">=0.0.5"
-    "@yandex/ymaps3-world-utils" ">=0.0.18856213"
+    "@yandex/ymaps3-world-utils" ">=0.0.19230700"
 
 vue3-toastify@^0.2.9:
   version "0.2.9"
