@@ -941,6 +941,11 @@
   dependencies:
     undici-types "~7.16.0"
 
+"@types/yandex-maps@^2.1.36":
+  version "2.1.36"
+  resolved "https://registry.yarnpkg.com/@types/yandex-maps/-/yandex-maps-2.1.36.tgz#5c611ff04e58f6cb6ce626dcc8a840cd218d4715"
+  integrity sha512-SxKOLe627WMFkC3jo7VelT29Uvbvg+LHRtD3cA6W0qWNuf7WQBv+lTaN+os1Vdum+EpglKBJbzjV8PJqwPZUQA==
+
 "@typescript-eslint/eslint-plugin@8.57.0":
   version "8.57.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.57.0.tgz#6e4085604ab63f55b3dcc61ce2c16965b2c36374"
@@ -1296,11 +1301,6 @@
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-cartesian-projection/-/ymaps3-cartesian-projection-0.0.6.tgz#a6b4b6fe31a2064a98f368bfd4624a30d581cb54"
   integrity sha512-k+K4SUg3xegPM2PdLdGObeyZkEH8MwHEFlFQPUnv5ZtnvKCTZ6VSrMVrn5Hvf1J8IMgHYVZm/0GxAJCVyWPxtQ==
 
-"@yandex/ymaps3-clusterer@>=0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-clusterer/-/ymaps3-clusterer-0.0.12.tgz#8c0ee852d7a3c00ebd3b5503da36b562282e4b72"
-  integrity sha512-APRJc4mZ+amPwoC7pKhVC1quvsX3mLkCi7V3AJUyp7noV/3w0yDzCdWqnMnMzu4JHR1YXP2TfPqYqQ1b8cEoeQ==
-
 "@yandex/ymaps3-context-menu@>=0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-context-menu/-/ymaps3-context-menu-0.0.2.tgz#c5b33f042713100b48337796b96192f9631318ad"
@@ -1315,11 +1315,6 @@
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-drawer-control/-/ymaps3-drawer-control-0.0.2.tgz#ff8998fe1e6b91fb031f3feff1081e49b3b240f7"
   integrity sha512-gy4MqNljXQdsqPznBb+Jk//4wTI1LdlamJE3MG9m3tHnVOM/9kH2xUQc+wsrIG1hPUqj10VrTw81A/oGA8Rjbw==
-
-"@yandex/ymaps3-hint@>=0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@yandex/ymaps3-hint/-/ymaps3-hint-0.1.2.tgz#81876405b2956c2570f649f74236a74b2d1a01c6"
-  integrity sha512-AcUlt0ugSlglaJmb5DdZpi6OR0FHCcR6me9Ti1/rkmll//x8vwWl8w0LsU43HZbfGK3ZLyuazlRDLXVe3UoL0A==
 
 "@yandex/ymaps3-minimap@>=0.0.4":
   version "0.0.4"
@@ -1343,7 +1338,7 @@
   dependencies:
     spin.js "^4.1.2"
 
-"@yandex/ymaps3-types@>=1.0.19287993":
+"@yandex/ymaps3-types@>=1.0.18413413":
   version "1.0.19345674"
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-types/-/ymaps3-types-1.0.19345674.tgz#d84a6060f7a4b6e7349a379e70a34ab5e034e2fb"
   integrity sha512-7R16mJueDKCIWzIvhFBgZvl5tVr8UYQZd79bga/iVSk1+wBe99w34/lcUHTnsWQMSSZzKTVL+ncdPpqTH8iMvw==
@@ -1353,7 +1348,7 @@
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-web-mercator-projection/-/ymaps3-web-mercator-projection-0.0.5.tgz#84f043e8274a5b717b64e0bedff28a19b7df147e"
   integrity sha512-yRGugQDq0y7x8sAKzMqRj92i4IFeSW5wOEVf6tmVIO/H/XEt3hhvI9BsSwZToUfoV957dPbvFrPwV345ndctdQ==
 
-"@yandex/ymaps3-world-utils@>=0.0.19230700":
+"@yandex/ymaps3-world-utils@>=0.0.18413413":
   version "0.0.19230700"
   resolved "https://registry.yarnpkg.com/@yandex/ymaps3-world-utils/-/ymaps3-world-utils-0.0.19230700.tgz#ff0b33006ee93f2251245b22ee981755a9e1c5bb"
   integrity sha512-3sen76szCmcMsfBwgTTXgxHlKj1RQRfwpkbsUY8s5TJ77Bq3ElG9eor7ZIXZQ4dysf7ZpbJxU9EztFyfXmMnFg==
@@ -2743,24 +2738,22 @@ vue-tsc@^3.2.5:
     "@volar/typescript" "2.4.28"
     "@vue/language-core" "3.2.5"
 
-vue-yandex-maps@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-3.0.4.tgz#527d8c73cc2028180344d7c9649b1c5aa1a076b1"
-  integrity sha512-uQxhym7fE+ZrEXHZKUrLwEwWU4CApGHapjDDiB83xZdnxNbXoO9EHh0SGTfbWU6IzA4qXx5w6bgyeWDMLTwo9g==
+vue-yandex-maps@^2.1.0:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-2.3.3.tgz#7d4b1f147a6a4bd80986b8aa394f429d52466834"
+  integrity sha512-R8Kd0ODcvedkKvzteUOLs4YNvNcjelc3lbAygMmoW6wvuR1BiX17puYtt4aBZRGtHtZDvqLte7sEEWa9S93IVw==
   dependencies:
     "@yandex/ymaps3-cartesian-projection" ">=0.0.6"
-    "@yandex/ymaps3-clusterer" ">=0.0.12"
     "@yandex/ymaps3-context-menu" ">=0.0.2"
     "@yandex/ymaps3-default-ui-theme" ">=0.0.24"
     "@yandex/ymaps3-drawer-control" ">=0.0.2"
-    "@yandex/ymaps3-hint" ">=0.1.2"
     "@yandex/ymaps3-minimap" ">=0.0.4"
     "@yandex/ymaps3-resizer" ">=0.0.2"
     "@yandex/ymaps3-signpost" ">=0.0.2"
     "@yandex/ymaps3-spinner" ">=0.0.2"
-    "@yandex/ymaps3-types" ">=1.0.19287993"
+    "@yandex/ymaps3-types" ">=1.0.18413413"
     "@yandex/ymaps3-web-mercator-projection" ">=0.0.5"
-    "@yandex/ymaps3-world-utils" ">=0.0.19230700"
+    "@yandex/ymaps3-world-utils" ">=0.0.18413413"
 
 vue3-toastify@^0.2.9:
   version "0.2.9"

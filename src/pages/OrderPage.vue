@@ -1,39 +1,6 @@
 <template>
   <div id="map">
-    <yandex-map
-      v-model="map"
-      :settings="{
-        location: {
-          center: [69.164708, 41.184022], // [long, lat] - Tashkent
-          zoom: 5,
-        },
-      }"
-      width="100%"
-      height="100%"
-      theme
-      showScaleInCopyrights: true
-    >
-        <yandex-map-default-scheme-layer/>
-        <yandex-map-default-features-layer/>
-        <!-- <yandex-map-default-marker :settings="{ coordinates: [69.164708, 41.184022] }"/> -->
-        <yandex-map-feature
-            v-if="route"
-            :settings="{
-                ...route,
-                style: {
-                    stroke: [{color: '#e100ff', width: 5}]
-                },
-            }"
-        />
-        <yandex-map-default-marker
-            v-if="points.from"
-            :settings="{coordinates: points.from, color: 'green'}"
-        />
-        <yandex-map-default-marker
-            v-if="points.to"
-            :settings="{coordinates: points.to, color: 'red'}"
-        />
-    </yandex-map>
+
   </div>
   <aside class="main" id="sidebar">
     <div class="main-header">
@@ -46,9 +13,7 @@
             <div class="main-fields">
                 <div class="main-field" id="fromField" :class="{ 'error': v$.route.from.$error }">
                     <div class="main-pin"></div>
-                    <v-select label="label" class="address-select" v-model="stateForm.route.from" :options="suggestions.from" :filterable="false" @search="(q) => onSearch(q, 'from')" @update:modelValue="onPointSelected" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.from_placeholder')" @blur="v$.route.from.$touch()">
-                        <template #no-options>{{ t('order.errors.no_suggest') }}</template>
-                    </v-select>
+                    <input id="from" type="text" v-model="stateForm.route.from" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.from_placeholder')" formControlName="from" autocomplete="off" @blur="v$.route.from.$touch()"/>
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
 
@@ -56,9 +21,7 @@
 
                 <div class="main-field" id="toField" :class="{ 'error': v$.route.to.$error }">
                     <div class="main-pin"></div>
-                    <v-select label="label" class="address-select" v-model="stateForm.route.to" :options="suggestions.to" :filterable="false" @search="(q) => onSearch(q, 'to')" @update:modelValue="onPointSelected" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.to_placeholder')"  @blur="v$.route.to.$touch()">
-                        <template #no-options>{{ t('order.errors.no_suggest') }}</template>
-                    </v-select>
+                    <input id="to" type="text" v-model="stateForm.route.to" :disabled="!!orderStore.lastOrderId" :placeholder="t('order.to_placeholder')" formControlName="to" autocomplete="off" @blur="v$.route.to.$touch()"/>
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
                 <label for="from" v-if="v$.route.to.$error" class="input-error">{{ t('order.errors.to') }}</label>
@@ -108,7 +71,7 @@
             </div>
             <div class="main-price">
                 <div class="main-price-label">{{ t('order.summary.total') }}</div>
-                <div class="main-price-value" id="totalValue">{{ calculationResult.total }}</div>
+                <div class="main-price-value" id="totalValue">{{ calculationResult.total }} ₽</div>
             </div>
         </div>
 
@@ -145,63 +108,80 @@
             <div class="main-success-title">{{ t('order.success.title') }}</div>
             <div class="main-success-title">{{ t('order.success.number') }}<span id="orderId">{{ orderStore.lastOrderId }}</span></div>
             <div class="main-success-subtitle">{{ t('order.success.message') }}</div>
-            <button @click="orderStore.clear()" class="button" type="button">{{ t('buttons.build_new') }}</button>
+            <button @click="orderStore.clear(); resetCalculation()" class="button build-new" type="button">{{ t('buttons.build_new') }}</button>
         </div>
     </div>
 </aside>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed, shallowRef, onMounted } from 'vue';
+/// <reference types="@types/yandex-maps" />
+import { ref, reactive, computed, onMounted } from 'vue';
 import getOrderData from '@/db/order.config';
 import { useOrderStore } from '@/store/app'
 import { useCreateDelivery } from '@/composables/useDeliveryData'
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify'
-import type { YMap, RouteFeature, LngLat, YMapMarkerEventHandler, YMapLocationRequest, BaseRouteResponse } from '@yandex/ymaps3-types';
-import {
-  getLocationFromBounds,
-  yandexMapLoadStatus,
-  YandexMap,
-  YandexMapDefaultSchemeLayer,
-  YandexMapDefaultFeaturesLayer,
-  YandexMapFeature,
-  YandexMapDefaultMarker
-} from 'vue-yandex-maps';
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, minLength } from '@vuelidate/validators'
-import vSelect from 'vue-select';
-import 'vue-select/dist/vue-select.css';
+
+interface DeliveryConfig {
+  value: string
+  rate: number
+  min: number
+  description: () => string
+  mediaClass?: string
+}
+
+interface CalculationResult {
+  distance: string
+  duration: string
+  rate: string
+  total: number
+  speed: string
+}
+
+interface OrderPayload {
+  customer: {
+    name: string
+    phone: string
+    comment: string
+  }
+  calculation: {
+    from: string
+    to: string
+    distance: string
+    duration: string
+    rate: string
+    total: number
+    speed: string
+  }
+  createdAt: string
+}
+
+declare const ymaps: typeof import('yandex-maps')
 
 const { t } = useI18n();
 const orderStore = useOrderStore()
 const { DELIVERY_SIZES, DELIVERY_SPEEDS } = getOrderData();
-const { result, error, loading, createOrderDelivery } = useCreateDelivery();
+const { result, error, createOrderDelivery } = useCreateDelivery();
 
-const location = ref<YMapLocationRequest>({
-    center: [69.164708, 41.184022],
-    zoom: 5,
-})
-const map = shallowRef<null | YMap>(null);
-const calculationResult = ref<any>(null)
+const calculationResult = ref<CalculationResult | null>(null)
 
-const points = reactive({
-  from: null as LngLat | null,
-  to: null as LngLat | null,
-});
-const suggestions = reactive({ from: [], to: [] });
+let mapInstance: ymaps.Map | null = null;
+let multiRoute: ymaps.multiRouter.MultiRoute | null = null;
 
 const stateForm = reactive({
     route: {
-        from: null as any,
-        to: null as any,
+        from: null as string | null,
+        to: null as string | null,
         size: 'xs',
-        speed: 'regular'
+        speed: 'regular',
     },
     order: {
         name: '',
         phone: '',
-        comment: ''
+        comment: '',
     }
 })
 
@@ -217,243 +197,144 @@ const rules = computed(() => ({
       required: helpers.withMessage(t('order.errors.phone'), required),
       // Если используешь маску, minLength(18) для "+7 (999) 999-99-99"
       minLength: helpers.withMessage(t('order.errors.phone_digit'), minLength(5)),
-      numeric: helpers.withMessage(t('order.errors.phone_digit'), helpers.regex(/^[0-9]+$/))
+      numeric: helpers.withMessage(t('order.errors.phone_digit'), helpers.regex(/^[0-9]+$/)),
     }
   }
 }))
 
-// declare let ymaps: any;
-const onPhoneInput = (e: Event) => {
-    const target = e.target as HTMLInputElement
-    target.value = target.value.replace(/\D/g, '')
-    stateForm.order.phone = target.value
+const onPhoneInput = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    target.value = target.value.replace(/\D/g, '');
+    stateForm.order.phone = target.value;
 }
 
-const v$ = useVuelidate(rules, stateForm)
+const v$ = useVuelidate(rules, stateForm);
 
 onMounted(() => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            const coords = [pos.coords.longitude, pos.coords.latitude];
-            const res = await ymaps3.search({ text: coords.join(',') });
-
-            if (res[0]) {
-                stateForm.route.from = { label: res[0].properties.name, coords }
-            }
+    ymaps.ready(() => {
+        mapInstance = new ymaps.Map('map', {
+            center: [41.184022, 69.164708],
+            zoom: 5,
+            controls: ['zoomControl']
         })
-    }
+        mapInstance.margin.addArea({
+            left: 0,
+            top: 0,
+            width: '400px',
+            height: '100%'
+        })
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos: GeolocationPosition) => {
+                const coords = [pos.coords.latitude, pos.coords.longitude];
+                mapInstance!.setCenter(coords, 15);
+
+                ymaps.geocode(coords).then((res: ymaps.IGeocodeResult) => {
+                    const first = res.geoObjects.get(0) as ymaps.GeoObject | null;
+                    if (first) {
+                        stateForm.route.from = first.getAddressLine() as string;
+                        mapInstance!.geoObjects.add(first);
+                    }
+                })
+            })
+        }
+
+        const suggestFrom = new ymaps.SuggestView('from');
+        const suggestTo = new ymaps.SuggestView('to');
+
+        suggestFrom.events.add('select', (e: ymaps.IEvent) => stateForm.route.from = e.get('item').value);
+        suggestTo.events.add('select', (e: ymaps.IEvent) => stateForm.route.to = e.get('item').value);
+    })
 })
 
-const onSearch = async (query: string, field: 'from' | 'to') => {
-    if (query.length < 3) return;
-    const results = await ymaps3.search({text: query});
-    suggestions[field] = results.map((item: any) => ({
-        label: item.properties.name + (item.properties.description ? `, ${item.properties.description}` : ''),
-        coords: item.geometry.coordinates
-    }))
-}
 
-// const pointAName = shallowRef('');
-// const pointBName = shallowRef('');
-const route = shallowRef<RouteFeature | null>(null);
+const handleCalculate = async (): Promise<void> => {
+  const isRouteValid = await v$.value.route.$validate();
+  if (!isRouteValid) return;
 
-const onPointSelected = () => {
-    if (stateForm.route.from?.coords) points.from = stateForm.route.from.coords;
-    if (stateForm.route.to?.coords) points.to = stateForm.route.to.coords;
-};
+  if (multiRoute) mapInstance!.geoObjects.remove(multiRoute);
 
-async function fetchRoute(startCoordinates: LngLat, endCoordinates: LngLat) {
-    const result = await ymaps3.route({
-        points: [startCoordinates, endCoordinates],
-        type: 'driving',
-        bounds: true,
-    })
-  console.log('routes response:', result)
+  multiRoute = new ymaps.multiRouter.MultiRoute({
+    referencePoints: [stateForm.route.from!, stateForm.route.to ],
+  }, { boundsAutoApply: true })
 
-  if (!result[0]) {
-    toast.error(t('order.route_failure'))
-    return
-  }
-  const firstRoute = result[0].toRoute();
-  console.log('firstRoute:', firstRoute)
-  console.log('firstRoute.properties:', firstRoute.properties)
-  console.log('geometry coords length:', firstRoute.geometry.coordinates.length)
-  if (firstRoute.geometry.coordinates.length === 0) return;
+  mapInstance!.geoObjects.add(multiRoute);
 
-  return firstRoute;
-}
-
-// const routeHandler = async (newRoute?: RouteFeature) => {
-//     if (!newRoute) {
-//         alert('Маршрут не найден');
-//         route.value = null;
-//         return;
-//     }
-
-//     route.value = newRoute;
-
-//     if(newRoute.properties.bounds) {
-//         const newLocation = await getLocationFromBounds({
-//             bounds: newRoute.properties.bounds,
-//             map: map.value!,
-//         })
-
-//         location.value = {
-//             center: newLocation.center,
-//             zoom: Math.floor(newLocation.zoom) - 1,
-//             duration: 300,
-//         }
-//     };
-// }
-
-// const onRouteResult = (result: BaseRouteResponse, type: AvailableTypes) => {
-//     const mapPoints = result.toRoute();
-//     console.log(mapPoints);
-//     routeHandler(mapPoints);
-
-//     const startCoords = mapPoints.geometry.coordinates[0];
-//     const endCoords = mapPoints.geometry.coordinates[mapPoints.geometry.coordinates.length - 1];
-//     points.from = startCoords;
-//     points.to = endCoords;
-// }
-
-// watch(yandexMapLoadStatus, async status => {
-//     if (status !== 'loaded') return;
-
-//     const fetchedRoute = await fetchRoute(points.from, points.to);
-//     await routeHandler(fetchedRoute);
-// }, { immediate: true })
+  multiRoute.model.events.add('requestsuccess', () => {
+    const activeRoute = multiRoute!.getActiveRoute();
+    if (activeRoute) {
 
 
-const handleCalculate = async () => {
-  console.log('ymaps3 status:', typeof ymaps3)
-  console.log('map value:', map.value)
-  const isRouteValid = await v$.value.route.$validate()
-  if (!isRouteValid) return
-
-  const fromCoords = stateForm.route.from?.coords;
-  const toCoords = stateForm.route.to?.coords;
-  console.log('coords:', fromCoords, toCoords)
+        const distanceData = activeRoute.properties.get('distance') as { value: number }
+        const km = distanceData.value / 1000
+        const config = DELIVERY_SIZES.value.find((s: DeliveryConfig) => s.value === stateForm.route.size);
 
 
-  if (!fromCoords[0] || !toCoords[0]) {
-    toast.error(t('order.route_failure'))
-    return
-  }
+        if (config) {
+            let total = Math.max(config.min, Math.ceil(km * config.rate));
+            let duration = Math.min(30, 1 + Math.ceil(km / 80));
 
-  points.from = fromCoords;
-  points.to = toCoords;
+            if (stateForm.route.speed === 'fast') {
+                total = Math.ceil(total * 1.15);
+                duration = Math.ceil(duration * 0.7);
+            }
 
-  try {
-//   const routes = await ymaps3.route({
-//     points: [fromCoords, toCoords],
-//     type: 'driving',
-//     bounds: true,
-//   })
-//   console.log('routes response:', routes)
-
-//   if (!routes[0]) {
-//     toast.error(t('order.route_failure'))
-//     return
-//   }
-
-//   const firstRoute = routes[0].toRoute();
-//   console.log('firstRoute:', firstRoute)
-//     console.log('firstRoute.properties:', firstRoute.properties)
-//     console.log('geometry coords length:', firstRoute.geometry.coordinates.length)
-//   if (firstRoute.geometry.coordinates.length === 0) return;
-
-//   route.value = firstRoute;
-//   console.log('Route object:', route.value)
-  const firstRoute = await fetchRoute(fromCoords, toCoords);
-  if (!firstRoute || firstRoute.geometry.coordinates.length === 0) {
-    toast.error(t('order.route_failure'));
-    return;
-  }
-  route.value = firstRoute;
-  const distanceInMeters = firstRoute.properties.length;
-  const km = distanceInMeters / 1000;
-  const config = DELIVERY_SIZES.value.find(s => s.value === stateForm.route.size);
-
-
-  if (config) {
-      let total = Math.max(config.min, Math.ceil(km * config.rate));
-      let duration = Math.min(30, 1 + Math.ceil(km / 80));
-
-      if (stateForm.route.speed === 'fast') {
-        total = Math.ceil(total * 1.15);
-        duration = Math.ceil(duration * 0.7);
-      }
-
-      calculationResult.value = {
-        distance: `${km.toFixed(1)} ${t('order.summary.km')}`,
-        duration: `${duration} ${t('order.summary.day')}`,
-        rate: `${config.rate} ${t('order.summary.price_per_km')}`,
-        total,
-        speed: stateForm.route.speed === 'fast' ? `${t('speeds.fast')}` : `${t('speeds.regular')}`
-      };
-  }
-
-  if (map.value && firstRoute.properties.bounds) {
-    const newLocation = await getLocationFromBounds({
-        bounds: firstRoute.properties.bounds,
-        map: map.value,
-    });
-
-    location.value = {
-        ...newLocation,
-        duration: 500
-    };
-  }
-  toast.success(t('order.route_success'));
-  } catch (e) {
-    console.error('route error:', e)
-  }
+            calculationResult.value = {
+                distance: `${km.toFixed(1)} ${t('order.summary.km')}`,
+                duration: `${duration} ${t('order.summary.day')}`,
+                rate: `${config.rate} ${t('order.summary.price_per_km')}`,
+                total,
+                speed: stateForm.route.speed === 'fast' ? `${t('speeds.fast')}` : `${t('speeds.regular')}`
+            };
+        }
+        toast.success(t('order.route_success'));
+    }
+  })
 }
 
 const handleSubmit = async () => {
-    const isFormValid = await v$.value.$validate()
+    const isFormValid = await v$.value.$validate();
     if (!isFormValid || !calculationResult.value) {
-      toast.warn('Заполните все поля и рассчитайте доставку')
-      return
+      toast.warn('Заполните все поля и рассчитайте доставку');
+      return;
     }
 
-    const payload = {
+    const payload: OrderPayload  = {
         customer: {
             name: stateForm.order.name,
             phone: stateForm.order.phone,
             comment: stateForm.order.comment,
         },
         calculation: {
-            from: stateForm.route.from.label,
-            to: stateForm.route.to.label,
+            from: stateForm.route.from!,
+            to: stateForm.route.to!,
             ...calculationResult.value
         },
         createdAt: new Date().toISOString(),
-    }
+    };
 
-    await createOrderDelivery(payload)
+    await createOrderDelivery(payload);
 
     if (error.value) {
-      toast.error(error.value)
+      toast.error(error.value);
     } else if (result.value) {
       // Сохраняем реальный ID из ответа сервера
-      orderStore.saveOrder(result.value.id, calculationResult.value)
-      toast.success(t('order.success.title'))
-      resetForm()
+      orderStore.saveOrder(result.value.id, calculationResult.value);
+      toast.success(t('order.success.title'));
+      resetForm();
     }
 }
 
 const resetForm = () => {
-  stateForm.route.from = null
-  stateForm.route.to = null
-  stateForm.order.name = ''
-  stateForm.order.phone = ''
-  stateForm.order.comment = ''
-  calculationResult.value = null
-  points.from = null
-  points.to = null
-  v$.value.$reset()
+  stateForm.route.from = null;
+  stateForm.route.to = null;
+  stateForm.order.name = '';
+  stateForm.order.phone = '';
+  stateForm.order.comment = '';
+  v$.value.$reset();
+}
+
+const resetCalculation = () => {
+    calculationResult.value = null;
 }
 </script>
 
@@ -580,7 +461,7 @@ const resetForm = () => {
     line-height: 1.2;
 }
 
-.calculate-button, .main-submit-request {
+.calculate-button, .main-submit-request, .build-new {
     width: 100%;
     height: 44px;
 }
