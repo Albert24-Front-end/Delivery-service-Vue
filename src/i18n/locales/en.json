@@ -70,7 +70,8 @@
       "phone": "Fill in your phone",
       "phone_digit": "The phone must contain only digits",
       "server_fail": "Could not calculate the order",
-      "no_suggest": ""
+      "no_suggest": "Could not find any suggestions",
+      "no_order": "Not found"
     },
     "route_success": "Route calculated",
     "route_failure": "Could not find one of the addresses"

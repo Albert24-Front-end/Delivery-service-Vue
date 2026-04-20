@@ -8,7 +8,7 @@
                 <input id="trackNumber" v-model="trackNumber" :placeholder="t('inputs.get_track_info')" autocomplete="off"/>
             </div>
             <button id="trackButton" class="button track-button w-full h-12.5" type="button" @click="handleTrack" :disabled="loading">{{ loading ? '...' : t("buttons.get_track_info") }}</button>
-            <p v-if="error" class="mt-3 text-red-500 text-sm text-center font-medium">{{ error }}</p>
+            <p v-if="error" class="mt-3 text-red-500 text-sm text-center font-medium">{{ t("order.errors.no_order") }}</p>
         </div>
     </section>
     <transition name="fade">

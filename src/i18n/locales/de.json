@@ -71,7 +71,8 @@
       "phone": "Füllen Sie Ihre Telefonnumer",
       "phone_digit": "Die Telefonnummer darf nur aus Ziffern bestehen",
       "server_fail": "Buyurtma yaratilmadi",
-      "no_suggest": "Die Bestellung wurde nicht erstellt"
+      "no_suggest": "Die Bestellung wurde nicht erstellt",
+      "no_order": "Nicht gefunden"
     },
     "route_success": "Route berechnet",
     "route_failure": "Eine der Adressen wurde nicht gefunden"
